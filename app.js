@@ -117,6 +117,20 @@ app.get('/about', function(req, res){
 	});
 });
 
+app.get('/archive', (req, res) => {
+	Person.find({CurrentStatus: 'missing'}, function(err, person){
+		if(err){
+			console.log("Following Errors occurred in Person.find() function: ");
+			console.log(err);
+		} else {
+				res.render('archive',{
+				person: person
+			});
+			
+		}
+	});
+} );
+
 // Start Server
 app.listen(3000, function(){
 	console.log('Server started on port 3000...');

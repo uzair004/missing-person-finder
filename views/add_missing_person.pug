@@ -2,7 +2,7 @@ extends layout
 
 block header
 	#AMP_header
-		h1(style="display:table-cell;text-align: center").align-middle Hi #{user.name}
+		h1(style="display:table-cell;text-align: center").align-middle Add details of person missing #{user.name}
 
 block content
 	if Photoerror
@@ -12,7 +12,7 @@ block content
 		form(method='POST', action='/person/missing/'+user._id enctype="multipart/form-data")
 			#form-group
 				label Name*:
-				input.form-control(name="name", type='text')
+				input.form-control(name="name", type='text', placeholder='John Doe')
 			#form-group
 				label Gender*:
 				select.form-control(name="gender")
@@ -82,7 +82,7 @@ block content
 				label Current Status*:
 				select.form-control(name="currentStatus")
 					option(value="missing" selected) Missing
-					option(value="found") Found
+					//- option(value="found") Found
 			#form-group
 				label Description:
 				textarea.form-control(name="description")
@@ -94,4 +94,4 @@ block content
 					.preview-images
 						img#Profile_Image
 			br
-			input.btn.btn-primary(type='submit',value='Submit')
+			input.btn.btn-primary(type='submit',value='Add Person')

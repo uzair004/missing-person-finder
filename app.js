@@ -69,7 +69,7 @@ app.get('*', function(req, res, next){
 	next();
 })
 // Home Route
-app.get('/', ensureAuthenticated, function(req, res){
+app.get('/', function(req, res){
 	Person.find({}, function(err, person){
 		if(err){
 			console.log("Following Errors occurred in Person.find() function: ");
@@ -111,7 +111,7 @@ app.get('/services', ensureAuthenticated, function(req, res){
 });
 
 // About Route
-app.get('/about', ensureAuthenticated, function(req, res){
+app.get('/about', function(req, res){
 	res.render('about', {
 
 	});

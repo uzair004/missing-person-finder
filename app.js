@@ -118,7 +118,7 @@ app.get('/about', function(req, res){
 });
 
 app.get('/archive', (req, res) => {
-	Person.find({CurrentStatus: 'missing'}, function(err, person){
+	Person.find({CurrentStatus: 'found'}, function(err, person){
 		if(err){
 			console.log("Following Errors occurred in Person.find() function: ");
 			console.log(err);

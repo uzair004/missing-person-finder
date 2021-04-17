@@ -35,7 +35,7 @@ block content
 				if n < 4
 					while n >= 0
 						.card.bg-dark
-								span.badge.badge-pill.badge-danger#lastest_item Recent
+								span.badge.badge-pill.badge-danger#latest_item Recent
 								if person[n].Image==undefined
 									if person[n].Gender=="male"
 										img.card-img-top(src='/mpf/missing_male.jpg', alt=person[n].Name)
@@ -64,7 +64,7 @@ block content
 						.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
 							.card.bg-dark
 								if n > person.length -5
-									span.badge.badge-pill.badge-danger#lastest_item Recent
+									span.badge.badge-pill.badge-danger#latest_item Recent
 								if person[n].Image==undefined
 									if person[n].Gender=="male"
 										img.card-img-top(src='/mpf/missing_male.jpg', alt=person[n].Name)
@@ -93,7 +93,7 @@ block content
 						.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
 							.card.bg-dark
 								if n > person.length -5
-									span.badge.badge-pill.badge-danger#lastest_item Recent
+									span.badge.badge-pill.badge-danger#latest_item Recent
 								if person[n].Image==undefined
 									if person[n].Gender=="male"
 										img.card-img-top(src='/mpf/missing_male.jpg', alt=person[n].Name)
@@ -130,7 +130,7 @@ block content
 					if art > articles.length-3
 						li.list-group-item.bg-dark.text-light
 							a(href='/articles/'+articles[art]._id).text-light= articles[art].title
-								span.badge.badge-pill.badge-info#lastest_item Latest
+								span.badge.badge-pill.badge-info#latest_item Latest
 					else
 						li.list-group-item.bg-dark.text-light
 							a(href='/articles/'+articles[art]._id).text-light= articles[art].title
@@ -140,7 +140,7 @@ block content
 					if art > articles.length-3
 						li.list-group-item.bg-dark.text-light
 							a(href='/articles/'+articles[art]._id).text-light= articles[art].title
-								span.badge.badge-pill.badge-info#lastest_item Latest
+								span.badge.badge-pill.badge-info#latest_item Latest
 					else
 						li.list-group-item.bg-dark.text-light
 							a(href='/articles/'+articles[art]._id).text-light= articles[art].title

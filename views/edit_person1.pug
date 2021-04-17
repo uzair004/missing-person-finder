@@ -11,7 +11,7 @@ block content
 		ul.list-group
 			while n >= 0
 				-var y = person.length -n;
-				a(href="/person/edit/"+person[n]._id)#person_list
+				a(href="/person/edit/"+person[n]._id).text-decoration-none#person-list-hover
 					li.list-group-item.d-flex.justify-content-between.align-items-center
 						|#{y}.  #{person[n].Name}
 						if person[n].CurrentStatus == "found"

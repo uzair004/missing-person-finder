@@ -2,46 +2,46 @@ let mongoose = require('mongoose');
 
 // Person Schema // Person can be either Missing or Found
 let personSchema = mongoose.Schema({
-	Name:{
-	type: String,
-	required: true
-	},
-	Image:{
-	type: String
-	},
-	Body:{
+	Name: {
 		type: String,
 		required: true
 	},
-	Height:{
+	Image: {
+		type: String
+	},
+	Body: {
+		type: String,
+		required: true
+	},
+	Height: {
 		type: Number,
 		required: true
 	},
-	Weight:{
+	Weight: {
 		type: Number,
 		required: true
 	},
-	Country:{
+	Country: {
 		type: String,
 		required: true
 	},
-	City:{
+	City: {
 		type: String,
 		required: true
 	},
-	MentalStatus:{
+	MentalStatus: {
 		type: String,
 		required: true
 	},
-	SkinColor:{
+	SkinColor: {
 		type: String,
 		required: true
 	},
-	EyeColor:{
+	EyeColor: {
 		type: String,
 		required: true
 	},
-	Hair:{
+	Hair: {
 		type: String,
 		required: true
 	},
@@ -49,29 +49,29 @@ let personSchema = mongoose.Schema({
 		type: Date,
 		required: true
 	},
-	Gender:{
+	Gender: {
 		type: String,
 		required: true
 	},
-	CurrentStatus:{
+	CurrentStatus: {
 		type: String,
 		required: true
 	},
-	Description:{
+	Description: {
 		type: String,
 		required: true
 	},
-	Author:{
-		type:String,
+	Author: {
+		type: String,
 		required: true
 	},
-	body:{
+	body: {
 		type: String
 	},
-	Age:{
+	Age: {
 		type: Number,
-		required:true
+		required: true
 	}
 });
 
-let Person = module.exports = mongoose.model('Person',personSchema);
+let Person = module.exports = mongoose.model('Person', personSchema);

@@ -1,6 +1,6 @@
 extends layout
 
-//- creating pug Mixin for later use (Search form)
+//- Pug Mixin created (search form)
 mixin searchForm
 	section.align-middle.search-sec#person_search_pageForm
 		.container
@@ -18,11 +18,10 @@ mixin searchForm
 									option(value="male") Male
 									option(value="female") Female
 							.col-lg-3.col-md-3.col-sm-12.p-0
-									button.btn.btn-primary.wrn-btn(type='submit' ) Search
-
-//- creating person details Mixin for later use (Card)
+								button.btn.btn-primary.wrn-btn(type='submit' ) Search
+//- pug mixin created (person Card)
 mixin personCard(person)
-	.card.bg-dark.shadow-lg.my-3
+	.card.bg-dark
 		if person[n].Image==undefined
 			if person[n].Gender=="male"
 				img.card-img-top(src='/mpf/missing_male.jpg', alt=person[n].Name)
@@ -44,7 +43,7 @@ mixin personCard(person)
 		.card-footer.bg-light
 			a(href="/person/"+person[n]._id style="color:white").btn.btn-primary
 				span.fa.fa-search
-				|  INVESTIGATE		
+				|  INVESTIGATE
 
 
 block header
@@ -52,7 +51,7 @@ block header
 	#person_search_header
 		h1(style="display:table-cell;text-align: center").align-middle Search Results
 	if x >=0
-		//- using Form Mixin
+		//- using pug mixin (search form)
 		+searchForm
 block content
 	h1 #{title}
@@ -60,17 +59,23 @@ block content
 	.bg-light.p-4
 		if n >= 0
 			.card-deck
-				.row				
-					while n >= 0
-						.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
-							//- using Card Mixin
+				.row
+					if n < 4 
+						while n >= 0
+							//- using pug mixin (person card)
 							+personCard(person)
-						-var n=n-1;
+							-var n=n-1;
+					else
+						while n >= 0
+							.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
+								//- using pug mixin (person card)
+								+personCard(person)
+							-var n=n-1;
 		if x < 0
 			#SorryPage.m-auto
 				img(src="/mpf/sad.webp" style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
 				h2(style="color:black").text-center SORRY, No Results Found... Please Search Again...
-				//- using mixin
+				//- using pug mixin (search form)
 				+searchForm
 				br
 				h6.text-center.text-info Tip: Try a different Combination... Leave all fields empty to show all Missing Person Results

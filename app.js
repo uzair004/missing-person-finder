@@ -82,7 +82,7 @@ app.get('/', function (req, res) {
 				});
 			});
 		}
-	}).limit(12)
+	}).sort({ _id: 'desc' }).limit(12)
 });
 
 // Route Files
@@ -128,7 +128,7 @@ app.get('/archive', (req, res) => {
 			});
 
 		}
-	});
+	}).sort({ _id: 'desc' });
 });
 
 // Start Server

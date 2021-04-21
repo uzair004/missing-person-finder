@@ -2,26 +2,26 @@ extends layout
 
 //- Pug Mixin created (for inserting Data inside card) 
 mixin personDetailsInsideCard
-	if person[n].Image==undefined
-		if person[n].Gender=="male"
-			img.card-img-top(src='/mpf/missing_male.jpg', alt=person[n].Name)
+	if person[i].Image==undefined
+		if person[i].Gender=="male"
+			img.card-img-top(src='/mpf/missing_male.jpg', alt=person[i].Name)
 		else
-			img.card-img-top(src='/mpf/missing_female.png', alt=person[n].Name)
+			img.card-img-top(src='/mpf/missing_female.png', alt=person[i].Name)
 	else
-		img.card-img-top(src='/uploads/missing/'+person[n].Image, alt=person[n].Name)
+		img.card-img-top(src='/uploads/missing/'+person[i].Image, alt=person[i].Name)
 	.card-body
-		h5.text-capitalize.card-title=person[n].Name
+		h5.text-capitalize.card-title=person[i].Name
 		ul.list-group.list-group-flush.myList
-			li.list-group-item.bg-dark.text-light Gender: #{person[n].Gender}
-			li.list-group-item.bg-dark.text-light Age: #{person[n].Age}
-			li.list-group-item.bg-dark.text-light Skin: #{person[n].SkinColor}
+			li.list-group-item.bg-dark.text-light Gender: #{person[i].Gender}
+			li.list-group-item.bg-dark.text-light Age: #{person[i].Age}
+			li.list-group-item.bg-dark.text-light Skin: #{person[i].SkinColor}
 			li.list-group-item.bg-dark.text-light Status: 
-				if person[n].CurrentStatus == "missing"
+				if person[i].CurrentStatus == "missing"
 					span.badge.badge-warning Missing
 				else
 					span.badge.badge-success Found	
 	.card-footer.bg-light
-		a(href="/person/"+person[n]._id style="color:white").btn.btn-primary
+		a(href="/person/"+person[i]._id style="color:white").btn.btn-primary
 			span.fa.fa-search
 			|  INVESTIGATE
 
@@ -53,27 +53,28 @@ block header
 
 block content
 	- var n = person.length -1;
-	h2 Missing Person
+	- var i = 0;
+	h2 Recent Listing
 	.bg-light.p-4
 		br
 		.card-deck
 			.row
 				if n < 4
-					while n >= 0
+					while i <= n
 						.card.bg-dark
-								span.badge.badge-pill.badge-danger#latest_item Recent
+								span.badge.badge-pill.badge-danger#latest_item Latest
 								//- using Mixin
 								+personDetailsInsideCard
-						-var n=n-1;
+						-var i=i+1;
 				else
-					while n >= 0
+					while i <= n
 						.col-sm-12.col-md-6.col-lg-4.mb-4
 							.card.bg-dark
-								if n > person.length -5
-									span.badge.badge-pill.badge-danger#latest_item Recent
+								if i < person.length -8
+									span.badge.badge-pill.badge-danger#latest_item Latest
 								//- using Mixin
 								+personDetailsInsideCard
-						-var n=n-1;
+						-var i=i+1;
 		br
 		hr
 	br

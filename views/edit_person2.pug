@@ -14,7 +14,7 @@ block content
 				input.form-control(name="name", type='text' value=person.Name)
 			#form-group
 				label Gender*:
-				select.form-control(name="gender" id="gender")
+				select.form-control(name="gender" id="gender" value=person.Gender)
 					option(value="male") Male
 					option(value="female") Female
 					option(value="na") Not Applicable
@@ -99,7 +99,7 @@ block content
 			input(type="text" value=person.Image name="fileCheck" style="display:none")
 
 			input.btn.btn-primary(type='submit',value='Update')
-	script
+	script.
 		document.getElementById("gender").value ='#{person.Gender}';
 		document.getElementById("mentalStatus").value ='#{person.MentalStatus}';
 		document.getElementById("body").value ='#{person.Body}';

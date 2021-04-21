@@ -1,5 +1,14 @@
 extends layout
 
+//- create pug Mixin
+mixin service(href, heading, description)
+	a(href=href).text-decoration-none.mb4.services
+		.media
+			i(class=attributes.iconClass style="font-size:48px;").mr-3.text-info
+			.media-body
+				h4.mt-0.text-info= heading
+				p= description
+
 block header
 	#Services_Header
 		h1(style="display:table-cell;text-align: center").align-middle Services
@@ -7,15 +16,6 @@ block content
 	h2 Services
 	br
 	.bg-light.p-4
-		//- create pug Mixin
-		mixin service(href, heading, description)
-			a(href=href style="text-decoration:none").mb4.services
-				.media
-					i(class=attributes.iconClass style="font-size:48px;").mr-3.text-info
-					.media-body
-						h4.mt-0.text-info= heading
-						p= description
-
 		//- using pug Mixin
 		+service('/', 
 		'Advance Search', 

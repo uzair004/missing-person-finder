@@ -16,7 +16,7 @@ block content
 				textarea.form-control(name="body" )=article.body
 			.form-group
 				label Image
-				input#input-files.form-control-file.border(type='file', name='file')
+				input#input-files.form-control-file.border(type='file', name='file', value=article.file)
 			.row
 				.col-sm-12
 					.preview-images
@@ -28,4 +28,4 @@ block content
 			input(type="text" value=article.file name="fileCheck" style="display:none")
 
 			br
-			input.btn.btn-primary(type='submit',value='Submit')
+			input.btn.btn-primary(type='submit',value='Update')

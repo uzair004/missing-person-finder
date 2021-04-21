@@ -25,9 +25,15 @@
 div.preview-images > img {
         width: 30%;
 }
-#page_container{
+#page_container {
 	min-height: 100vh;
 	padding-top:5vh;
+}
+#page_container2 {
+	min-height: 80vh;
+	padding-top:15vh;
+	padding-bottom: 5vh;
+	color: rgb(0, 170, 255);
 }
 #Profile_header,
 #AMP_header,

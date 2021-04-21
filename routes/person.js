@@ -229,10 +229,10 @@ router.post('/edit/:id', upload, ensureAuthenticated, [
 // Investigate Page Route
 router.get('/:id', ensureAuthenticated, function (req, res) {
 	Person.findById(req.params.id, function (err, person) {
-		User.findById(person.Author, function (err, user1) {
+		User.findById(person.Author, function (err, user) {
 			res.render('investigate.pug', {
 				person: person,
-				user1: user1
+				user: user
 			});
 		});
 	});

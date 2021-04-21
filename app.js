@@ -82,7 +82,7 @@ app.get('/', function (req, res) {
 				});
 			});
 		}
-	});
+	}).limit(12)
 });
 
 // Route Files

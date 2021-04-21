@@ -26,7 +26,7 @@ mixin personDetailsInsideCard
 block header
 	#About_Header
 		h1(style="display:table-cell;text-align: center").align-middle Archive of all found people
-	p.text-light.text-center List of people who were later found thanks to thousands of MPF volunteers and contributers around the world
+	p.text-light.text-center.bg-success #{person.length} people were successfully found thanks to thousands of MPF volunteers and contributers around the world
 	
 block content
 	- var n = person.length -1;
@@ -38,16 +38,8 @@ block content
 				if n < 4
 					while n >= 0
 						.card.bg-dark
-								span.badge.badge-pill.badge-danger#latest_item Recent
-								+personDetailsInsideCard
-						-var n=n-1;
-				if n > 11
-					while person.length -13 < n
-						.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
-							.card.bg-dark
-								if n > person.length -5
-									span.badge.badge-pill.badge-danger#latest_item Recent
-								+personDetailsInsideCard
+							span.badge.badge-pill.badge-danger#latest_item Recent
+							+personDetailsInsideCard
 						-var n=n-1;
 				else
 					while n >= 0

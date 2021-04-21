@@ -3,6 +3,7 @@ extends layout
 block header
 	#AMP_header
 		h1(style="display:table-cell;text-align: center").align-middle #{title}
+	p.text-white.bg-info.text-center You can update/change person information and Status
 
 block content
 	h1 Edit Person
@@ -83,7 +84,7 @@ block content
 				textarea.form-control(name="description")=person.Description
 			.form-group
 				label Image
-				input#input-files.form-control-file.border(type='file', name='file')
+				input#input-files.form-control-file.border(type='file', name='file', value=person.Image)
 			.row
 				.col-sm-12
 					.preview-images

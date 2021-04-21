@@ -65,18 +65,9 @@ block content
 								//- using Mixin
 								+personDetailsInsideCard
 						-var n=n-1;
-				if n > 11
-					while person.length -13 < n
-						.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
-							.card.bg-dark
-								if n > person.length -5
-									span.badge.badge-pill.badge-danger#latest_item Recent
-								//- using Mixin
-								+personDetailsInsideCard
-						-var n=n-1;
 				else
 					while n >= 0
-						.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
+						.col-sm-12.col-md-6.col-lg-4.mb-4
 							.card.bg-dark
 								if n > person.length -5
 									span.badge.badge-pill.badge-danger#latest_item Recent
@@ -102,7 +93,7 @@ block content
 							a(href='/articles/'+articles[art]._id).text-light= articles[art].title
 					-var art = art-1;
 			else
-				while articles.length -11 <art
+				while articles.length -11 < art
 					if art > articles.length-3
 						li.list-group-item.bg-dark.text-light
 							a(href='/articles/'+articles[art]._id).text-light= articles[art].title

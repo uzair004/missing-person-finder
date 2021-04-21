@@ -54,6 +54,7 @@ block header
 		//- using pug mixin (search form)
 		+searchForm
 block content
+	span(style="font-size:12px").text-light #{person.length} record found
 	h1 #{title}
 	- var n = person.length -1;
 	.bg-light.p-4
@@ -67,7 +68,7 @@ block content
 							-var n=n-1;
 					else
 						while n >= 0
-							.col-sm-12.col-md-6.col-lg-4.col-xl-3.mb-4
+							.col-sm-12.col-md-6.col-lg-4.mb-4
 								//- using pug mixin (person card)
 								+personCard(person)
 							-var n=n-1;

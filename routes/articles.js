@@ -51,7 +51,7 @@ router.get('/add', ensureAuthenticated, function (req, res) {
 });
 
 // Get Single Article
-router.get('/:id', ensureAuthenticated, function (req, res) {
+router.get('/:id', function (req, res) {
 	Article.findById(req.params.id, function (err, article) {
 		User.findById(article.author, function (err, user) {
 			res.render('article', {
@@ -117,7 +117,7 @@ router.post('/edit/:id', upload, ensureAuthenticated, [
 router.delete('/:id', ensureAuthenticated, function (req, res) {
 	let query = { _id: req.params.id };
 
-	Article.remove(query, function (err) {
+	Article.deleteOne(query, function (err) {
 		if (err) {
 			console.log(err);
 		}

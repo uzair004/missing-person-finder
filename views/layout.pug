@@ -53,7 +53,7 @@ html
 		#header
 			block header
 		.container#page_container
-			!= messages('message', locals)
+			!= messages('display_message', locals)
 			if errors
 				each error, i in errors
 					div(class="alert alert-danger") #{error.msg}

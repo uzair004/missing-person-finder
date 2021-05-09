@@ -9,7 +9,7 @@ block content
 	.bg-light.p-4
 		br
 		if article.file != null
-			img(src="/uploads/article/"+article.file).d-block.w-100.h-auto.mx-auto
+			img(src=article.file.url).d-block.w-100.h-auto.mx-auto
 		br
 		p= article.body
 		hr

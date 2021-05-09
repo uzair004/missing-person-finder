@@ -23,9 +23,9 @@ block content
 						if article.file == null
 							img(src="/uploads/article/noimage.webp")#Profile_Image
 						else
-							img(src="/uploads/article/"+article.file)#Profile_Image
+							img(src=article.file.url)#Profile_Image
 			br
-			input(type="text" value=article.file name="fileCheck" style="display:none")
+			input(type="text" value=article.file name="oldFileCheck" style="display:none")
 
 			br
 			input.btn.btn-primary(type='submit',value='Update')

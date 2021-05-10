@@ -23,7 +23,8 @@ const UserSchema = mongoose.Schema({
 		required: true
 	},
 	file: {
-		type: String
+		url: { type: String },
+		public_id: { type: String }
 	},
 	Articles: {
 		type: Number
@@ -32,5 +33,14 @@ const UserSchema = mongoose.Schema({
 		type: Number
 	}
 });
+
+UserSchema.path('file.url').validate((val) => {
+	urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+	if (urlRegex.test(val)) {
+		return true;
+	} else {
+		return false;
+	}
+}, 'Invalid URL.');
 
 const User = module.exports = mongoose.model('User', UserSchema);

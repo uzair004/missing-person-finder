@@ -36,11 +36,16 @@ block content
 				input.form-control(name="password2", type='text')
 			#form-group
 				label Profile Image
-				input#input-files.form-control-file.border.mb-4(type='file', name='file')
+				input#input-files.form-control-file.border.mb-4(type='file', name='file', value=user.file)
 			.row
 				.col-sm-12
 					.preview-images
-						img(src="/uploads/"+user.file id="Profile_Image")
+						if user.file != null
+							img(src=user.file.url id="Profile_Image")
+
+			br
+			input(type="text" value=user.file name="oldFileCheck" style="display:none")
+
 			br
 			input.btn.btn-primary(type='submit',value='Update')
 		br

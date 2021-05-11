@@ -22,13 +22,13 @@ mixin searchForm
 //- pug mixin created (person Card)
 mixin personCard(person)
 	.card.bg-dark
-		if person[n].Image==undefined
+		if person[n].Image.url===undefined
 			if person[n].Gender=="male"
 				img.card-img-top(src='/mpf/missing_male.jpg', alt=person[n].Name)
 			else
 				img.card-img-top(src='/mpf/missing_female.png', alt=person[n].Name)
 		else
-			img.card-img-top(src='/uploads/missing/'+person[n].Image, alt=person[n].Name)
+			img.card-img-top(src=person[n].Image.url, alt=person[n].Name)
 		.card-body
 			h5.card-title=person[n].Name
 			ul.list-group.list-group-flush.myList

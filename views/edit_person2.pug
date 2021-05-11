@@ -94,9 +94,9 @@ block content
 							else
 								img(src="/mpf/missing_male.jpg")#Profile_Image
 						else
-							img(src="/uploads/missing/"+person.Image)#Profile_Image
+							img(src=person.Image.url)#Profile_Image
 			br
-			input(type="text" value=person.Image name="fileCheck" style="display:none")
+			input(type="text" value=person.Image name="oldFileCheck" style="display:none")
 
 			input.btn.btn-primary(type='submit',value='Update')
 	script.

@@ -2,13 +2,13 @@ extends layout
 
 //- Pug Mixin created (to insert details inside card)
 mixin personDetailsInsideCard
-	if person[i].Image==undefined
+	if person[i].Image.url===undefined
 		if person[i].Gender=="male"
 			img.card-img-top(src='/mpf/missing_male.jpg', alt=person[i].Name)
 		else
 			img.card-img-top(src='/mpf/missing_female.png', alt=person[i].Name)
 	else
-		img.card-img-top(src='/uploads/missing/'+person[i].Image, alt=person[i].Name)
+		img.card-img-top(src=person[i].Image.url, alt=person[i].Name)
 	.card-body
 		h5.text-capitalize.card-title=person[i].Name
 		ul.list-group.list-group-flush.myList

@@ -208,7 +208,7 @@ router.post('/edit/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 });
 
 // Investigate Page Route
-router.get('/:id', ensureAuthenticated, function (req, res) {
+router.get('/:id', function (req, res) {
 	Person.findById(req.params.id).then(foundPerson => {
 		User.findById(foundPerson.Author).then(foundUser => {
 			res.render('investigate.pug', {
@@ -221,116 +221,80 @@ router.get('/:id', ensureAuthenticated, function (req, res) {
 
 // Person Search Route
 router.post('/person_search', function (req, res) {
-	////////////
+	// Single field search
 	if (req.body.name != '') {
 		if (req.body.gender == "gender" && req.body.country == '') {
-			Person.find({ "Name": { $regex: new RegExp("^" + req.body.name, "i") } }, (err, person) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.render('person_search', {
-						person: person
-					});
-				}
-			});
+			// search by name
+			singlefieldSearchAndShowRecords("Name", req.body.name, res);
+			return;
 		}
 	}
 	else if (req.body.country != '') {
 		if (req.body.name == '' && req.body.gender == "gender") {
-			Person.find({ "Country": { $regex: new RegExp("^" + req.body.country, "i") } }, (err, person) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.render('person_search', {
-						person: person
-					});
-				}
-			});
+			// search by country
+			singlefieldSearchAndShowRecords("Country", req.body.country, res);
+			return;
 		}
 	}
 	else if (req.body.gender != "gender") {
 		if (req.body.name == '' && req.body.country == '') {
-			Person.find({ "Gender": { $regex: new RegExp("^" + req.body.gender, "i") } }, (err, person) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.render('person_search', {
-						person: person
-					});
-				}
-			});
+			// search by gender
+			singlefieldSearchAndShowRecords("Gender", req.body.gender, res);
+			return;
 		}
 	}
-	////////////
+
+	// Two fields search
 	if (req.body.name == '') {
 		if (req.body.gender != "gender" && req.body.country != '') {
-			Person.find({ "Gender": { $regex: new RegExp("^" + req.body.gender, "i") }, "Country": { $regex: new RegExp("^" + req.body.country, "i") } }, (err, person) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.render('person_search', {
-						person: person
-					});
-				}
-			});
+			// search by Gender and Country
+			twofieldSearchAndShowRecords("Gender", req.body.gender, "Country", req.body.country, res);
+			return;
 		}
 	}
 	else if (req.body.country == '') {
 		if (req.body.name != '' && req.body.gender != "gender") {
-			Person.find({ "Gender": { $regex: new RegExp("^" + req.body.gender, "i") }, "Name": { $regex: new RegExp("^" + req.body.name, "i") } }, (err, person) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.render('person_search', {
-						person: person
-					});
-				}
-			});
+			// search by Gender and Name
+			twofieldSearchAndShowRecords("Gender", req.body.gender, "Name", req.body.name, res);
+			return;
 		}
 	}
 	else if (req.body.gender == "gender") {
 		if (req.body.name != '' && req.body.country != '') {
-			Person.find({ "Name": { $regex: new RegExp("^" + req.body.name, "i") }, "Country": { $regex: new RegExp("^" + req.body.country, "i") } }, (err, person) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.render('person_search', {
-						person: person
-					});
-				}
-			});
+			// search by Name and Country
+			twofieldSearchAndShowRecords("Name", req.body.name, "Country", req.body.country, res);
+			return;
 		}
 	}
-	/////////////
+
+	// All(Three) or No fields search
+	// no field search
 	if (req.body.gender == "gender" && req.body.name == '' && req.body.country == '') {
-		Person.find({}, (err, person) => {
-			if (err) {
-				console.log(err);
-			}
-			else {
+		Person.find({})
+			.then(foundPeople => {
 				res.render('person_search', {
-					person: person
-				});
-			}
-		});
+					person: foundPeople
+				})
+			}).catch(err => console.error(`error while finding people in db `, err))
+		return;
 	}
+	// Three fields search
 	else {
-		Person.find({ "Gender": { $regex: new RegExp("^" + req.body.gender, "i") }, "Country": { $regex: new RegExp("^" + req.body.country, "i") }, "Name": { $regex: new RegExp("^" + req.body.name, "i") } }, (err, person) => {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				res.render('person_search', {
-					person: person
-				});
-			}
-		});
+		// search by Name, Gender, Country
+		Person.find()
+			.where("Gender", { $regex: new RegExp("^" + req.body.gender, "i") })
+			.where("Country", { $regex: new RegExp("^" + req.body.country, "i") })
+			.where("Name", { $regex: new RegExp("^" + req.body.name, "i") })
+			.exec((err, foundPeople) => {
+				if (err) {
+					console.error(`error while finding people in db `, err);
+				} else {
+					res.render('person_search', {
+						person: foundPeople
+					})
+				}
+			});
+		return;
 	}
 });
 
@@ -383,4 +347,36 @@ function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 		.catch(err => console.error('something went wrong while uploading to Cloudinary', err))
 }
 
+// Look for records using one field in db and show them 
+function singlefieldSearchAndShowRecords(searchField, searchTerm, res) {
+
+	Person.find()
+		.where(searchField, { $regex: new RegExp("^" + searchTerm, "i") })
+		.exec((err, foundPeople) => {
+			if (err) {
+				console.error(`error while finding people in db`, err)
+			} else {
+				res.render('person_search', {
+					person: foundPeople
+				});
+			}
+		})
+}
+
+// Look for records using two fields in db and show them 
+function twofieldSearchAndShowRecords(searchField, searchTerm, searchField2, searchTerm2, res) {
+
+	Person.find()
+		.where(searchField, { $regex: new RegExp("^" + searchTerm, "i") })
+		.where(searchField2, { $regex: new RegExp("^" + searchTerm2, "i") })
+		.exec((err, foundPeople) => {
+			if (err) {
+				console.error(`error while finding people in db`, err)
+			} else {
+				res.render('person_search', {
+					person: foundPeople
+				});
+			}
+		})
+}
 module.exports = router;

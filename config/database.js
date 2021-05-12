@@ -1,4 +1,6 @@
+require('dotenv').config();
+
 module.exports = {
-	database: 'mongodb://localhost:27017/mpfdb',
-	secret: 'yoursecret'
+	database: process.env.MONGODB_URI,
+	// secret: 'yoursecret'
 }

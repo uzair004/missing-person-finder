@@ -20,8 +20,8 @@ block content
 			.row
 				.col-sm-12
 					.preview-images
-						if article.file == null
-							img(src="/uploads/article/noimage.webp")#Profile_Image
+						if article.file.url === undefined
+							img(src="/mpf/noimage.webp")#Profile_Image
 						else
 							img(src=article.file.url)#Profile_Image
 			br

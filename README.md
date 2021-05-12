@@ -1,6 +1,6 @@
 # missing-person-finder
 
-This is Missing Person Finder website built in node.js for OOAD Semester 6 Project. (PMAS AAUR University Institute of Information Technology) Software Engineering Department
+CS Final Semester project.
 
 ## Technologies
 * Node.js
@@ -10,6 +10,7 @@ This is Missing Person Finder website built in node.js for OOAD Semester 6 Proje
 * Pug Templating
 * Passport.js Authentication
 * BCrypt Hashing
+* Cloudinary
 
 ### Version
 1.0.0

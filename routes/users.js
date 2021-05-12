@@ -96,7 +96,6 @@ router.post('/register', upload, cloudinaryConfig, [
 			// hash password
 			bcrypt.hash(newUser.password, 10)
 				.then(hash => newUser.password = hash)
-				.catch(err => console.log(`error while hashing password`, err))
 
 			// upload image to cloudinary and save doc to database
 			cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
@@ -220,7 +219,6 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 
 // updated user in database and redirect
 function updateUserandRedirect(query, userProfile, req, res) {
-	console.log('password while saving', userProfile.password)
 	User.updateOne(query, userProfile)
 		.then(response => {
 			req.flash('success', 'Profile Updated Successfully');

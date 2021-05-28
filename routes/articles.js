@@ -80,8 +80,8 @@ router.get('/edit/:id', ensureAuthenticated, function (req, res) {
 
 // Update Submit POST Route
 router.post('/edit/:id', ensureAuthenticated, upload, cloudinaryConfig, [
-	check('title', 'Title is required').notEmpty(),
-	check('body', 'Body is required').notEmpty()
+	check('title', 'Title is required').notEmpty().escape(),
+	check('body', 'Body is required').notEmpty().escape(),
 ], function (req, res) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
@@ -155,8 +155,8 @@ router.delete('/:id', ensureAuthenticated, cloudinaryConfig, function (req, res)
 
 // Add Submit POST Route
 router.post('/add', ensureAuthenticated, upload, cloudinaryConfig, [
-	check('title', 'Title is required').notEmpty(),
-	check('body', 'Body is required').notEmpty()
+	check('title', 'Title is required').notEmpty().escape(),
+	check('body', 'Body is required').notEmpty().escape()
 ], function (req, res) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {

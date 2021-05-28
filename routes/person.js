@@ -57,8 +57,14 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 	check('weight', 'Weight is required').notEmpty(),
 	check('country', 'Country is required').notEmpty(),
 	check('city', 'City is required').notEmpty(),
+	check('description', 'Description is required').notEmpty(),
 	check('dateOfMissing', 'Date of Missing is required').notEmpty(),
-	check('description', 'Description is required').notEmpty()
+	check('dateOfMissing').custom((value, { req, location, path }) => {
+		if (new Date() < new Date(req.body.dateOfMissing)) {
+			throw new Error('date cannot be in future');
+		}
+		return true;
+	}),
 ], function (req, res) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {

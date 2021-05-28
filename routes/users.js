@@ -61,7 +61,25 @@ router.post('/register', upload, cloudinaryConfig, [
 		} else {
 			return value;
 		}
-	})
+	}).bail(),
+	check('email', 'email already in use').custom((value, { req, loc, path }) => {
+		return User.findOne({ "email": req.body.email }).then(foundUser => {
+			if (foundUser) {
+				return Promise.reject('E-mail already in use')
+			} else {
+				Promise.resolve(value);
+			}
+		})
+	}).bail(),
+	check('username', 'username already taken').custom((value, { req, loc, path }) => {
+		return User.findOne({ "username": req.body.username }).then(foundUser => {
+			if (foundUser) {
+				return Promise.reject('Username already taken');
+			} else {
+				Promise.resolve(value);
+			}
+		})
+	}),
 ], function (req, res) {
 	if (req.file == undefined) {
 		res.render('register', {
@@ -154,7 +172,16 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		} else {
 			return value;
 		}
-	})
+	}).bail(),
+	check('email', 'email already in use').custom((value, { req, loc, path }) => {
+		return User.findOne({ "email": req.body.email }).then(foundUser => {
+			if (foundUser && (foundUser._id != req.params.id)) {
+				return Promise.reject('E-mail already in use')
+			} else {
+				Promise.resolve(value);
+			}
+		})
+	}),
 ], function (req, res) {
 	if (req.body.oldFileCheck == '' && req.file == undefined) {
 		res.render('profile', {

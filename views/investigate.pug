@@ -65,8 +65,8 @@ block content
 
 		h4.bg-info(style="color:white") Do you have any information about #{person.Name} ?
 		h4.bg-info(style="color:white") Yes? It would greatly help #{user.name} in the Search, Contact #{user.name}.
-		if user.file == null
-			img(src="/mpf/logo.png" style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
+		if user.file.url == undefined
+			img(src="/mpf/male.webp" style="width:250px;height:200px;display:block;margin-left:auto;margin-right:auto")
 		else
 			img(src=user.file.url style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
 		br

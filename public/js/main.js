@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		imagesPreview(this, "div.preview-images");
 	});
 
-	document.addEventListener('DOMContentLoaded', function () {
+	$(document).ready(function () {
 		$('li.active').removeClass('active');
 		$('a[href="' + location.pathname + '"]').closest('li').addClass('active');
 	});

@@ -1,7 +1,5 @@
 # missing-person-finder
 
-CS Final Semester project.
-
 ## Technologies
 * Node.js
 * Express
@@ -13,7 +11,7 @@ CS Final Semester project.
 * Cloudinary
 
 ### Version
-1.0.0
+2.0.0
 
 ## Usage
 

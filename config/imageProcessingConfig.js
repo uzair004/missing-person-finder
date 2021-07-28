@@ -49,18 +49,21 @@ const myConfig = {
 	hand: { enabled: false }
 }
 
-async function detect(input) {
+async function detector(input) {
 	// read input image file and create tensor to be used for processing
 	log.info('Loading Image: ', input);
 
-	log.info('Converting Image to Buffer')
-	let buffer = await imageToBuffer(input);
-
+	let buffer;
+	if (Buffer.isBuffer(input)) {
+		buffer = input;
+	} else {
+		log.info('Converting Image to Buffer')
+		buffer = await imageToBuffer(input);
+	}
 	log.info('Buffer value: ', buffer)
 
 	log.info('Decoding image')
 	let tensor = imageDecoder(buffer);
-
 	log.info('Decoding done')
 
 	// image shape contains image dimensions and depth
@@ -71,43 +74,35 @@ async function detect(input) {
 	try {
 		result = await human.detect(tensor, myConfig);
 	} catch (err) {
-		log.error('caught');
+		log.error('error while detection: ', err);
 	}
 
 	// dispose image tensor as we no longer need it
 	human.tf.dispose(tensor);
 
-	// print data to console
-	printToConsole(result);
+	// printToConsole(result);
 
-	// Write data into file
-	writeToFile(result, input);
+	let faceExtractorRes = faceExtractor(result);
 
-	return result;
-
+	return faceExtractorRes;
 }
 
-module.exports = async function main(f) {
+async function main(f) {
 	log.header();
 	log.info('Current folder:', process.env.PWD);
 	await init();
-	if (!fs.existsSync(f) && !f.startsWith('http')) {
-		log.error(`File not found: ${process.argv[2]}`);
+
+	let detectorResult;
+
+	if (Buffer.isBuffer(f)) {
+		detectorResult = await detector(f);
 	} else {
-		if (fs.existsSync(f)) {
-			const stat = fs.statSync(f);
-			if (stat.isDirectory()) {
-				const dir = fs.readdirSync(f);
-				for (const file of dir) {
-					await detect(path.join(f, file));
-				}
-			} else {
-				await detect(f);
-			}
-		} else {
-			await detect(f);
-		}
+		// in case f is file or link
+		detectorResult = detectFromLinkOrFile(f);
 	}
+
+	return detectorResult;
+
 }
 
 // ---------------- Functions --------------
@@ -126,11 +121,11 @@ async function init() {
 	log.info('Memory State', human.tf.engine().memory());
 }
 
-async function imageToBuffer(input) {
+async function imageToBuffer(imagePath) {
 	let buffer;
-	if (input.startsWith('http:') || input.startsWith('https:')) {
+	if (imagePath.startsWith('http:') || imagePath.startsWith('https:')) {
 		log.info('fetching image')
-		const res = await fetch(input);
+		const res = await fetch(imagePath);
 		log.info('image fetched');
 		if (res && res.ok) {
 			log.info('working on conversion to buffer')
@@ -142,7 +137,7 @@ async function imageToBuffer(input) {
 		}
 
 	} else {
-		buffer = fs.readFileSync(input);
+		buffer = fs.readFileSync(imagePath);
 		return buffer;
 	}
 }
@@ -166,24 +161,25 @@ function imageDecoder(buffer) {
 }
 
 function printToConsole(result) {
-	// log.data('Results:');
+	log.data('Results:');
 	if (result && result.face && result.face.length > 0) {
 		for (let i = 0; i < result.face.length; i++) {
 			const face = result.face[i];
-			// log.data(`Face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender}`);
-			// log.data(`Face: #${i} face-embedding: ${face.embedding}`);
+			log.data(`Face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender}`);
+			log.data(`Face: #${i} face-embedding: ${face.embedding}`);
 		}
 	} else {
 		log.data(' Face: N/A ');
 	}
 }
 
-function writeToFile(result, input) {
-	if (result) {
+function writeToFile(source, embedding) {
+	if (embedding) {
 
-		let obj = new Object();
-		obj.source = input;
-		obj.embedding = result.face[0].embedding;
+		let obj = {
+			source,
+			embedding
+		}
 
 		facesDB.push(obj);
 
@@ -195,22 +191,42 @@ function writeToFile(result, input) {
 	}
 }
 
-// async function test() {
-// 	process.on('unhandledRejection', (err) => {
-// 		// @ts-ignore // no idea if exception message is compelte
-// 		log.error(err?.message || err || 'no error message');
-// 	});
+function faceExtractor(result) {
+	if (result && result.face && result.face.length > 0) {
+		return { faceExist: true, faceEmbedding: result.face[0].embedding }
+	} else {
+		log.data('Face N/A')
+		return { faceExist: false, message: 'Face N/A' };
+	}
+}
 
-// 	// test with embedded full body image
-// 	let result;
+async function detectFromLinkOrFile(f) {
+	let result;
 
-// 	log.state('Processing embedded warmup image: face');
-// 	myConfig.warmup = 'face';
-// 	result = await human.warmup(myConfig);
+	if (!fs.existsSync(f) && !f.startsWith('http')) {
+		log.error(`File is not from local, link, or buffer : ${f}`);
+	} else {
+		if (fs.existsSync(f)) {
+			const stat = fs.statSync(f);
+			if (stat.isDirectory()) {
+				const dir = fs.readdirSync(f);
+				for (const file of dir) {
+					result = await detector(path.join(f, file));
+				}
+			} else {
+				result = await detector(f);
+			}
+		} else {
+			// when f is link to image
+			result = await detector(f);
+		}
+	}
 
-// 	log.state('Processing embedded warmup image: full');
-// 	myConfig.warmup = 'full';
-// 	result = await human.warmup(myConfig);
-// 	// no need to print results as they are printed to console during detection from within the library due to human.config.debug set
-// 	return result;
-// }
+	return result;
+}
+
+module.exports = {
+	main: main,
+	printToConsole: printToConsole,
+	writeToFile: writeToFile,
+}

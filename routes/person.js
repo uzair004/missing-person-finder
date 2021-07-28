@@ -7,7 +7,8 @@ const cloudinary = require('cloudinary').v2
 const cloudinaryConfig = require('../config/cloudinaryConfig');
 const DatauriParser = require('datauri/parser');
 
-const imageProcessor = require('../config/imageProcessingConfig');
+const imageProcessor = require('../config/imageProcessingConfig').main;
+const writeToFile = require('../config/imageProcessingConfig').writeToFile;
 
 const personFolderPath = "Missing_Person_Finder/person_images/"
 
@@ -99,25 +100,28 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		});
 		// if no image of missing person added
 		if (req.file === undefined) {
-			newPerson.save()
-				.then(result => {
-					req.flash('success', 'Missing Person Added');
-					res.redirect('/');
-				})
-				.catch(err => console.error(`error whilie saving to database`, err));
+			res.render('add_missing_person', {
+				user: req.user,
+				Photoerror: "Please upload image",
+			});
+			return;
 		} else {
 			// convert image buffer to base64
 			const imgAsBase64 = dataUri(req).content;
 
 			// upload image to Cloudinary and save doc to mongodb
-			uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res);
+			let done = await uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res);
+
+			if (done) {
+				// increase user person counts by 1
+				let query = { _id: req.params.id };
+				let userUpdate = {};
+				userUpdate.MissingPerson = req.user.MissingPerson + 1;
+				User.updateOne(query, userUpdate)
+					.catch(err => console.error(`error while updating user person count`, err))
+			}
+
 		}
-		// increase user person counts by 1
-		let query = { _id: req.params.id };
-		let userUpdate = {};
-		userUpdate.MissingPerson = req.user.MissingPerson + 1;
-		User.updateOne(query, userUpdate)
-			.catch(err => console.error(`error while updating user person count`, err))
 	}
 });
 
@@ -338,33 +342,51 @@ function updatePersonandRedirect(query, updatePerson, req, res) {
 
 // upload image to cloudinary and save doc to mongoDb
 async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
-	// upload image buffer to cloudinary
-	try {
-		const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
-		newPerson.Image.url = result.url;
-		newPerson.Image.public_id = result.public_id;
-	} catch (error) {
-		console.error(`error while uploading image to cloudinary `, error);
+	// face recognition
+	let buffer = req.file.buffer;
+	let response = await imageProcessor(buffer);
+
+	if (!response.faceExist) {
+		res.render('add_missing_person', {
+			user: req.user,
+			Photoerror: "No face found, please upload different image",
+		});
+		return false;
+	} else {
+		// upload image buffer to cloudinary
+		try {
+			const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
+			newPerson.Image.url = result.url;
+			newPerson.Image.public_id = result.public_id;
+		} catch (error) {
+			console.error(`error while uploading image to cloudinary `, error);
+			res.render('add_missing_person', {
+				user: req.user,
+				Photoerror: "Cannot upload image, possibly server problem, try again later",
+			});
+			return false;
+		}
+
+		let source = newPerson.Image.url;
+
+		// save in mongoDB
+		try {
+			const savedDoc = await newPerson.save();
+		} catch (error) {
+			console.error('error while saving doc to database: ', error);
+		}
+
+		// send response
+		req.flash('success', 'Missing Person Added');
+		res.redirect('/');
+
+		// write to faces data to file
+		writeToFile(source, response.faceEmbedding);
+
+		return true;
 	}
 
-	// save in mongoDB
-	try {
-		const savedDoc = await newPerson.save();
 
-	} catch (error) {
-		console.error('error while saving doc to database: ', error);
-	}
-
-	// send response
-	req.flash('success', 'Missing Person Added');
-	res.redirect('/');
-
-	// Image Processing (get facial data)
-	try {
-		await imageProcessor(newPerson.Image.url);
-	} catch (error) {
-		console.error(`error while processing image`, error);
-	}
 }
 
 // Look for records using one field in db and show them 

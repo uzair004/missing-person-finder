@@ -7,6 +7,8 @@ const cloudinary = require('cloudinary').v2
 const cloudinaryConfig = require('../config/cloudinaryConfig');
 const DatauriParser = require('datauri/parser');
 
+const imageProcessor = require('../config/imageProcessingConfig');
+
 const personFolderPath = "Missing_Person_Finder/person_images/"
 
 const parser = new DatauriParser();
@@ -65,7 +67,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		}
 		return true;
 	}),
-], function (req, res) {
+], async function (req, res) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		res.render('add_missing_person', {
@@ -335,22 +337,34 @@ function updatePersonandRedirect(query, updatePerson, req, res) {
 }
 
 // upload image to cloudinary and save doc to mongoDb
-function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
+async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 	// upload image buffer to cloudinary
-	cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath })
-		.then((result) => {
-			newPerson.Image.url = result.url;
-			newPerson.Image.public_id = result.public_id;
-			// save in mongoDB
-			newPerson.save()
-				.then(result => {
-					req.flash('success', 'Missing Person Added');
-					res.redirect('/');
-				})
-				.catch(err => console.error(`error while saving to database`, err));
+	try {
+		const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
+		newPerson.Image.url = result.url;
+		newPerson.Image.public_id = result.public_id;
+	} catch (error) {
+		console.error(`error while uploading image to cloudinary `, error);
+	}
 
-		})
-		.catch(err => console.error('something went wrong while uploading to Cloudinary', err))
+	// save in mongoDB
+	try {
+		const savedDoc = await newPerson.save();
+
+	} catch (error) {
+		console.error('error while saving doc to database: ', error);
+	}
+
+	// send response
+	req.flash('success', 'Missing Person Added');
+	res.redirect('/');
+
+	// Image Processing (get facial data)
+	try {
+		await imageProcessor(newPerson.Image.url);
+	} catch (error) {
+		console.error(`error while processing image`, error);
+	}
 }
 
 // Look for records using one field in db and show them 

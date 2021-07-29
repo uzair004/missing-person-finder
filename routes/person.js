@@ -9,6 +9,7 @@ const DatauriParser = require('datauri/parser');
 
 const imageProcessor = require('../config/imageProcessingConfig').main;
 const writeToFile = require('../config/imageProcessingConfig').writeToFile;
+const facesDB = require('../config/imageProcessingConfig').facesDB;
 
 const personFolderPath = "Missing_Person_Finder/person_images/"
 
@@ -344,9 +345,9 @@ function updatePersonandRedirect(query, updatePerson, req, res) {
 async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 	// face recognition
 	let buffer = req.file.buffer;
-	let response = await imageProcessor(buffer);
+	let faces = await imageProcessor(buffer);
 
-	if (!response.faceExist) {
+	if (faces.length === 0) {
 		res.render('add_missing_person', {
 			user: req.user,
 			Photoerror: "No face found, please upload different image",
@@ -380,12 +381,16 @@ async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 		req.flash('success', 'Missing Person Added');
 		res.redirect('/');
 
-		// write to faces data to file
-		writeToFile(source, response.faceEmbedding);
+		// update faces aray
+		faces.forEach(face => {
+			facesDB.push({ source: source, embedding: face.faceEmbedding })
+		})
+
+		// write to faces data to file and array
+		writeToFile(facesDB);
 
 		return true;
 	}
-
 
 }
 

@@ -33,7 +33,7 @@ const myConfig = {
 		detector: {
 			enabled: true,
 			rotation: true,
-			maxDetected: 1,
+			maxDetected: 4,
 			// minConfidence: 0.4,
 			// modelPath: ,
 		},
@@ -177,30 +177,25 @@ function printToConsole(result) {
 	}
 }
 
-function writeToFile(source, embedding) {
-	if (embedding) {
+function writeToFile(facesDB) {
 
-		let obj = {
-			source,
-			embedding
-		}
-
-		facesDB.push(obj);
-
-		// write objects to file
-		fs.writeFile(jsonFilePath, JSON.stringify(facesDB, null, null), (err, data) => {
-			if (err) console.error('error while writing data to file: ', err)
-			else console.log('data written to file');
-		});
-	}
+	// write objects to file
+	fs.writeFile(jsonFilePath, JSON.stringify(facesDB, null, null), (err, data) => {
+		if (err) console.error('error while writing data to file: ', err)
+		else log.info('data written to file');
+	});
 }
 
 function faceExtractor(result) {
 	if (result && result.face && result.face.length > 0) {
-		return { faceExist: true, faceEmbedding: result.face[0].embedding }
+		let faces = [];
+		result.face.forEach(eachFace => {
+			faces.push({ faceEmbedding: eachFace.embedding })
+		});
+		return faces;
 	} else {
 		log.data('Face N/A')
-		return { faceExist: false, message: 'Face N/A' };
+		return [];
 	}
 }
 
@@ -233,4 +228,5 @@ module.exports = {
 	main: main,
 	printToConsole: printToConsole,
 	writeToFile: writeToFile,
+	facesDB: facesDB
 }

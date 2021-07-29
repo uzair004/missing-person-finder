@@ -14,9 +14,10 @@ let human = null;
 
 let facesDB = [];
 
+let jsonFilePath = path.join(process.cwd(), 'public', 'faces', 'facesDB.json')
 // read recognized faces data
 console.log('Reading already recognized faces from file ');
-facesDB = JSON.parse(fs.readFileSync('result.json'));
+facesDB = JSON.parse(fs.readFileSync(jsonFilePath));
 
 const myConfig = {
 	backend: 'tensorflow',
@@ -89,7 +90,6 @@ async function detector(input) {
 
 async function main(f) {
 	log.header();
-	log.info('Current folder:', process.env.PWD);
 	await init();
 
 	let detectorResult;
@@ -184,7 +184,7 @@ function writeToFile(source, embedding) {
 		facesDB.push(obj);
 
 		// write objects to file
-		fs.writeFile('result.json', JSON.stringify(facesDB, null, 1), (err, data) => {
+		fs.writeFile(jsonFilePath, JSON.stringify(facesDB, null, 1), (err, data) => {
 			if (err) console.error('error while writing data to file: ', err)
 			else console.log('data written to file');
 		});

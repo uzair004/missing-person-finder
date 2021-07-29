@@ -14,9 +14,13 @@ let human = null;
 
 let facesDB = [];
 
-let jsonFilePath = path.join(process.cwd(), 'public', 'faces', 'facesDB.json')
+let jsonFilePath = path.join(process.cwd(), 'public', 'faces', 'facesDB.json');
+
 // read recognized faces data
-console.log('Reading already recognized faces from file ');
+log.info('Reading already recognized faces from file ');
+if (!fs.existsSync(jsonFilePath)) {
+	fs.writeFileSync(jsonFilePath, JSON.stringify([]), { flag: 'a' });
+}
 facesDB = JSON.parse(fs.readFileSync(jsonFilePath));
 
 const myConfig = {
@@ -184,7 +188,7 @@ function writeToFile(source, embedding) {
 		facesDB.push(obj);
 
 		// write objects to file
-		fs.writeFile(jsonFilePath, JSON.stringify(facesDB, null, 1), (err, data) => {
+		fs.writeFile(jsonFilePath, JSON.stringify(facesDB, null, null), (err, data) => {
 			if (err) console.error('error while writing data to file: ', err)
 			else console.log('data written to file');
 		});

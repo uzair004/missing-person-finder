@@ -11,6 +11,8 @@ const imageProcessor = require('../config/imageProcessingConfig').main;
 const writeToFile = require('../config/imageProcessingConfig').writeToFile;
 const facesDB = require('../config/imageProcessingConfig').facesDB;
 
+const getMatch = require('../config/imageSearchConfig');
+
 const personFolderPath = "Missing_Person_Finder/person_images/"
 
 const parser = new DatauriParser();
@@ -311,6 +313,36 @@ router.post('/person_search', function (req, res) {
 	}
 });
 
+// Image Search Route
+router.post('/person_search_by_image', upload, async function (req, res,) {
+	if (req.file === undefined) {
+		res.render('person_search', {
+			errors: [{ msg: 'please upload an image for Image Search' }],
+			person: []
+		})
+		return;
+	}
+
+	let buffer = req.file.buffer;
+	let faces = await imageProcessor(buffer);
+	if (faces.length === 0) {
+		res.render('person_search', {
+			errors: [{ msg: 'Face N/A in your image, plz upload different image' }],
+			person: []
+		})
+		return;
+	}
+
+	const matchedResult = getMatch(faces);
+	if (matchedResult.similarity === 0) {
+		res.render('person_search', {
+			person: []
+		});
+	} else {
+		singlefieldSearchAndShowRecords("Name", matchedResult.name, res);
+	}
+
+});
 
 // ---------- Functions ----------
 
@@ -384,7 +416,7 @@ async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 
 		// update faces aray
 		faces.forEach(face => {
-			facesDB.push({ name: personName, source: imageSource, embedding: face.faceEmbedding })
+			facesDB.push({ embedding: face.faceEmbedding, name: personName, source: imageSource })
 		})
 
 		// write to faces data to file and array

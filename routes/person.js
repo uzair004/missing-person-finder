@@ -368,7 +368,8 @@ async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 			return false;
 		}
 
-		let source = newPerson.Image.url;
+		let imageSource = newPerson.Image.url;
+		let personName = newPerson.Name;
 
 		// save in mongoDB
 		try {
@@ -383,7 +384,7 @@ async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 
 		// update faces aray
 		faces.forEach(face => {
-			facesDB.push({ source: source, embedding: face.faceEmbedding })
+			facesDB.push({ name: personName, source: imageSource, embedding: face.faceEmbedding })
 		})
 
 		// write to faces data to file and array

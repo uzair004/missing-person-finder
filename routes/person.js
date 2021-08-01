@@ -339,7 +339,16 @@ router.post('/person_search_by_image', upload, async function (req, res,) {
 			person: []
 		});
 	} else {
-		singlefieldSearchAndShowRecords("Name", matchedResult.name, res);
+
+		try {
+			let foundPeople = await Person.findOne({ "Name": matchedResult.name });
+			res.render('person_search', {
+				person: [foundPeople]
+			});
+		} catch (error) {
+			console.error('error while finding person in db: ', error);
+		}
+
 	}
 
 });

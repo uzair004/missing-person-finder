@@ -80,8 +80,10 @@ block content
 				tr
 					td Phone
 					td(colspan="2")
-						a(href="tel:"+user.contact) Click to Call Now
+						a(href="tel:"+user.contact) 
+							<i class="fa fa-phone text-primary fa-flip-horizontal" aria-hidden="true"></i> Click to call #{user.contact}
 				tr
 					td Email
 					td(colspan="2")
-						a(href="mailto: "+user.email  target="_blank") Click to Send Mail Now
+						a(href="mailto: "+user.email  target="_blank")
+							<i class="fa fa-envelope text-primary" aria-hidden="true"></i> Click to Email

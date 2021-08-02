@@ -15,7 +15,7 @@ const facesDB = require('../config/imageProcessingConfig').facesDB;
 const { StaticPool } = require('node-worker-threads-pool');
 const workerFilePath = path.join(process.cwd(), 'config', 'imageSearchWorker.js');
 const staticPool = new StaticPool({
-	size: 4,
+	size: 3,
 	task: workerFilePath,
 	workerData: facesDB
 });

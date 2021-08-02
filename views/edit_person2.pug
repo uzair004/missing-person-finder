@@ -19,11 +19,14 @@ block content
 					option(value="female") Female
 					option(value="other") Other
 			#form-group
-				label Mental Status*:
-				select.form-control(name="mentalStatus" id="mentalStatus")
-					option(value="disorder") Mental Disorder
-					option(value="fine") No Mental Issues
-					option(value="na") Not Applicable
+				label.d-block Mental Disorder*:
+				div.form-check.form-check-inline
+					.form-check
+						input(type="radio" value="true" name="mentalStatus").form-check-input#Check1
+						label(for="Check1").form-check-label.text-secondary Yes
+					.form-check
+						input(type="radio" value="false" name="mentalStatus").form-check-input#Check2
+						label(for="Check2").form-check-label.text-secondary No
 			#form-group
 				label Body Type*:
 				select.form-control(name="body" id="body")
@@ -101,7 +104,11 @@ block content
 			input.btn.btn-primary(type='submit',value='Update')
 	script.
 		document.getElementById("gender").value ='#{person.Gender}';
-		document.getElementById("mentalStatus").value ='#{person.MentalStatus}';
+		if('#{person.Gender}' === "true") {
+			document.getElementById("Check1").checked = true;
+		} else {
+			document.getElementById("Check2").checked = true;
+		}
 		document.getElementById("body").value ='#{person.Body}';
 		document.getElementById("skinColor").value ='#{person.SkinColor}';
 		document.getElementById("eyeColor").value ='#{person.EyeColor}';

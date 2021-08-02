@@ -20,11 +20,14 @@ block content
 					option(value="female") Female
 					option(value="other") Other
 			#form-group
-				label Mental Status*:
-				select.form-control(name="mentalStatus")
-					option(value="disorder" selected) Mental Disorder
-					option(value="fine") No Mental Issues
-					option(value="na") Not Applicable
+				label.d-block Mental Disorder*:
+				div.form-check.form-check-inline
+					.form-check
+						input(type="radio" value="true" name="mentalStatus").form-check-input#Check1
+						label(for="Check1").form-check-label.text-secondary Yes
+					.form-check
+						input(type="radio" value="false" name="mentalStatus").form-check-input#Check2
+						label(for="Check2").form-check-label.text-secondary No
 			#form-group
 				label Body Type*:
 				select.form-control(name="body")

@@ -31,7 +31,7 @@ let personSchema = mongoose.Schema({
 		required: true
 	},
 	MentalStatus: {
-		type: String,
+		type: Boolean,
 		required: true
 	},
 	SkinColor: {

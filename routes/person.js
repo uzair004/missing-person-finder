@@ -11,7 +11,14 @@ const imageProcessor = require('../config/imageProcessingConfig').main;
 const writeToFile = require('../config/imageProcessingConfig').writeToFile;
 const facesDB = require('../config/imageProcessingConfig').facesDB;
 
-const getMatch = require('../config/imageSearchConfig');
+// worker threads pool
+const { StaticPool } = require('node-worker-threads-pool');
+const workerFilePath = path.join(process.cwd(), 'config', 'imageSearchWorker.js');
+const staticPool = new StaticPool({
+	size: 4,
+	task: workerFilePath,
+	workerData: facesDB
+});
 
 const personFolderPath = "Missing_Person_Finder/person_images/"
 
@@ -24,6 +31,7 @@ const dataUri = req => parser.format(path.extname(req.file.originalname).toStrin
 let User = require("../models/user");
 // Bring in Person Model
 let Person = require("../models/person");
+const { promises } = require('dns');
 
 // Access Control
 function ensureAuthenticated(req, res, next) {
@@ -333,7 +341,16 @@ router.post('/person_search_by_image', upload, async function (req, res,) {
 		return;
 	}
 
-	const matchedResult = getMatch(faces);
+	// get match result data from func in workerFile
+	let matchedResult
+	try {
+		matchedResult = await staticPool.exec(faces);
+		console.log('match search result: ', matchedResult)
+	} catch (err) {
+		console.error('error while executing workerFile func using staticPool.exec :', err)
+	}
+
+	// send response to user
 	if (matchedResult.similarity === 0) {
 		res.render('person_search', {
 			person: []

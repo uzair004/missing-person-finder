@@ -1,9 +1,8 @@
+const { parentPort, workerData } = require('worker_threads');
+
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node');
 const Human = require('@vladmandic/human').default;
-
-const imageProcessor = require('../config/imageProcessingConfig').main;
-const facesDB = require('../config/imageProcessingConfig').facesDB;
 
 const myConfig = {
 	backend: 'tensorflow',
@@ -38,9 +37,17 @@ const myConfig = {
 
 let human = new Human(myConfig);
 
-module.exports = function getMatch(faces) {
+// Main thread will pass the data you need
+// through this event listener.
+parentPort.on('message', (faces) => {
+	const result = getMatch(faces, workerData); //faces was passed to func as arg, workerData was passed to threadPool
+
+	// return the result to main thread.
+	parentPort.postMessage(result);
+});
+
+function getMatch(faces, facesDB) {
 	const result = human.match(faces[0].faceEmbedding, facesDB, 0.40)
-	console.log('Result for Search: ', result)
 
 	return result;
 }

@@ -226,6 +226,63 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 	}
 });
 
+// Change password Route 
+router.post('/updatepassword/:id', ensureAuthenticated, [
+	check('password', 'current password is required').notEmpty(),
+	check('password2', 'Enter new password').notEmpty(),
+	check('password3', 'confirm new password').notEmpty(),
+	check('password3', 'Passwords do not match').custom((value, { req, loc, path }) => {
+		if (value !== req.body.password2) {
+			throw new Error("Passwords don't match");
+		} else {
+			return value;
+		}
+	}).bail(),
+	check('password', 'Incorrect password').custom(async (value, { req, loc, path }) => {
+		let userId = req.params.id;
+		const foundUser = await User.findById(userId);
+		if (foundUser) {
+			const isMatch = await bcrypt.compare(value, foundUser.password);
+			if (isMatch)
+				Promise.resolve(value);
+			else
+				return Promise.reject("Incorrect password");
+		} else {
+			return Promise.reject(`User not found`)
+		}
+	}).bail(),
+
+], async function (req, res) {
+	const errors = validationResult(req);
+
+	let userProfile = {};
+	userProfile.name = req.body.name;
+	userProfile.contact = req.body.contact;
+	userProfile.email = req.body.email;
+
+	if (!errors.isEmpty()) {
+		res.render('profile', {
+			errors: errors.array(),
+			user: userProfile
+		});
+		return;
+	} else {
+		const { password2: newPassword } = req.body;
+		// hash password
+		userProfile.password = await bcrypt.hash(newPassword, 10);
+		// save in mongoDB and redirect
+		const query = { _id: req.params.id };
+		User.updateOne(query, userProfile)
+			.then(response => {
+				req.flash('success', 'Password changed successfully');
+				res.redirect('/users/profile/');
+				user: userProfile
+				return;
+			})
+			.catch(err => console.error(`error while updating doc`, err))
+	}
+});
+
 // ----------- Functions ------------
 
 

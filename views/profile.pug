@@ -44,3 +44,19 @@ block content
 			input.btn.btn-primary(type='submit',value='Update')
 		br
 		a(href="/" type="button"  role="button" aria-pressed="true" style="color:white").btn.btn-danger Discard
+		
+	.mb-5
+	h2 Change Password
+	.bg-dark.p-4
+		form(method='POST', action='/users/updatepassword/'+user._id)
+			#form-group
+				label(for="password1") Current Password*:
+				input.form-control(name="password", type='password' id ="password1" placeholder="Password")
+			#form-group
+				label(for="password2") New Password*:
+				input.form-control(name="password2", type='password' id="password2" autocomplete="new-password" placeholder="New password")
+			#form-group
+				label(for="password3") Confirm Password*:
+				input.form-control(name="password3", type='password' id="password3" autocomplete="new-password" placeholder="New password again")
+				br
+			input.btn.btn-primary(type='submit', value='Change Password')

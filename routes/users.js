@@ -80,7 +80,7 @@ router.post('/register', upload, cloudinaryConfig, [
 			}
 		})
 	}),
-], function (req, res) {
+], async function (req, res) {
 	if (req.file == undefined) {
 		res.render('register', {
 			Photoerror: "Please upload Profile Image"
@@ -112,8 +112,7 @@ router.post('/register', upload, cloudinaryConfig, [
 			});
 
 			// hash password
-			bcrypt.hash(newUser.password, 10)
-				.then(hash => newUser.password = hash)
+			newUser.password = await bcrypt.hash(newUser.password, 10);
 
 			// upload image to cloudinary and save doc to database
 			cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
@@ -182,7 +181,7 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			}
 		})
 	}),
-], function (req, res) {
+], async function (req, res) {
 	if (req.body.oldFileCheck == '' && req.file == undefined) {
 		res.render('profile', {
 			Photoerror: "Please Re-upload Profile Image or Change the image",
@@ -206,8 +205,7 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			let query = { _id: req.params.id };
 
 			// hash password
-			const hash = bcrypt.hashSync(userProfile.password, 10);
-			userProfile.password = hash;
+			userProfile.password = await bcrypt.hash(userProfile.password, 10);
 
 			// use old image if available
 			if (req.body.oldFileCheck != '' && req.file === undefined) {

@@ -159,19 +159,10 @@ router.get('/profile', function (req, res) {
 
 // Update User Profile Route
 router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
+	check('contact', 'Contact Number is required').notEmpty(),
 	check('name', 'Name is required').notEmpty(),
 	check('email', 'Email is required').notEmpty(),
 	check('email', 'Email is not valid').isEmail(),
-	check('contact', 'Contact Number is required').notEmpty(),
-	check('password', 'Password is required').notEmpty(),
-	check('password2', 'Passwords do not match').custom((value, { req, loc, path }) => {
-		if (value !== req.body.password) {
-			// trow error if passwords do not match
-			throw new Error("Passwords don't match");
-		} else {
-			return value;
-		}
-	}).bail(),
 	check('email', 'email already in use').custom((value, { req, loc, path }) => {
 		return User.findOne({ "email": req.body.email }).then(foundUser => {
 			if (foundUser && (foundUser._id != req.params.id)) {
@@ -192,7 +183,6 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		userProfile.name = req.body.name;
 		userProfile.email = req.body.email;
 		userProfile.contact = req.body.contact;
-		userProfile.password = req.body.password;
 
 		const errors = validationResult(req);
 
@@ -203,9 +193,6 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			});
 		} else {
 			let query = { _id: req.params.id };
-
-			// hash password
-			userProfile.password = await bcrypt.hash(userProfile.password, 10);
 
 			// use old image if available
 			if (req.body.oldFileCheck != '' && req.file === undefined) {

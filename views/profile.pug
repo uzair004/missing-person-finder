@@ -34,8 +34,10 @@ block content
 			.row
 				.col-sm-12
 					.preview-images
-						if user.file != null
+						if user.file && user.file.url
 							img(src=user.file.url id="Profile_Image")
+						else 
+							img(src="/mpf/male.webp" style="width:250px;height:200px;display:block;")
 
 			br
 			input(type="text" value=user.file name="oldFileCheck" style="display:none")

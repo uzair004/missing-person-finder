@@ -81,39 +81,42 @@ router.post('/register', upload, cloudinaryConfig, [
 		})
 	}),
 ], async function (req, res) {
-	if (req.file == undefined) {
+
+	const { name, email, contact, username, password, password2 } = req.body;
+
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
 		res.render('register', {
-			Photoerror: "Please upload Profile Image"
+			errors: errors.array()
 		});
 	} else {
+		let newUser = new User({
+			name: name,
+			email: email,
+			contact: contact,
+			username: username,
+			password: password,
+			file: {},
+			MissingPerson: 0,
+			FoundPerson: 0,
+			Articles: 0
+		});
 
-		const { name, email, contact, username, password, password2 } = req.body;
+		// hash password
+		newUser.password = await bcrypt.hash(newUser.password, 10);
 
-		// convert image buffer to base64
-		const imgAsBase64 = dataUri(req).content;
-
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.render('register', {
-				errors: errors.array()
-			});
+		if (req.file == undefined) {
+			// save in mongoDB
+			newUser.save()
+				.then(result => {
+					req.flash('success', 'You are now registered and can log in');
+					res.redirect('/users/login');
+				})
+				.catch(err => console.error(`error while saving to database`, err));
 		} else {
-			let newUser = new User({
-				name: name,
-				email: email,
-				contact: contact,
-				username: username,
-				password: password,
-				file: {},
-				MissingPerson: 0,
-				FoundPerson: 0,
-				Articles: 0
-			});
-
-			// hash password
-			newUser.password = await bcrypt.hash(newUser.password, 10);
-
+			// convert image buffer to base64
+			const imgAsBase64 = dataUri(req).content;
 			// upload image to cloudinary and save doc to database
 			cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
 				.then(result => {
@@ -129,7 +132,9 @@ router.post('/register', upload, cloudinaryConfig, [
 				})
 				.catch(err => console.error(`error while uploading to cloudinary`, err))
 		}
+
 	}
+
 });
 
 // Login Form
@@ -173,56 +178,55 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		})
 	}),
 ], async function (req, res) {
-	if (req.body.oldFileCheck == '' && req.file == undefined) {
+
+	let userProfile = {};
+	userProfile.name = req.body.name;
+	userProfile.email = req.body.email;
+	userProfile.contact = req.body.contact;
+
+	const errors = validationResult(req);
+	console.log('Req receved')
+	if (!errors.isEmpty()) {
 		res.render('profile', {
-			Photoerror: "Please Re-upload Profile Image or Change the image",
-			user: User
+			errors: errors.array(),
+			user: userProfile
 		});
 	} else {
-		let userProfile = {};
-		userProfile.name = req.body.name;
-		userProfile.email = req.body.email;
-		userProfile.contact = req.body.contact;
+		console.log('into else block')
+		let query = { _id: req.params.id };
+		// noimage at all
+		if (isEmptyObj(req.body.oldFileCheck) && isEmptyObj(req.file)) {
+			updateUserandRedirect(query, userProfile, req, res);
+			// old image availabel ? use it
+		} else if (!isEmptyObj(req.body.oldFileCheck) && isEmptyObj(req.file)) {
+			userProfile.file = JSON.parse(req.body.oldFileCheck);
+			updateUserandRedirect(query, userProfile, req, res)
 
-		const errors = validationResult(req);
+		} else if (!isEmptyObj(req.body.oldFileCheck) && !isEmptyObj(req.file)) {
+			console.log('oldFilecheck value', req.body.oldFileCheck)
+			console.log('file value: ', req.file)
+			// convert image buffer to base64
+			const imgAsBase64 = dataUri(req).content;
 
-		if (!errors.isEmpty()) {
-			res.render('profile', {
-				errors: errors.array(),
-				user: userProfile
-			});
-		} else {
-			let query = { _id: req.params.id };
+			// delete old image from cloudinary
+			User.findOne({ _id: req.params.id })
+				.then(foundUser => {
+					cloudinary.uploader.destroy(foundUser.file.public_id)
+						.catch(err => console.error(`error while deleting image from cloudinary`, err))
+				}).catch(err => console.error(`error while finding user`, err));
 
-			// use old image if available
-			if (req.body.oldFileCheck != '' && req.file === undefined) {
-				userProfile.file = JSON.parse(req.body.oldFileCheck);
-				updateUserandRedirect(query, userProfile, req, res)
-
-			} else {
-				// convert image buffer to base64
-				const imgAsBase64 = dataUri(req).content;
-
-				// delete old image from cloudinary
-				User.findOne({ _id: req.params.id })
-					.then(foundUser => {
-						cloudinary.uploader.destroy(foundUser.file.public_id)
-							.catch(err => console.error(`error while deleting image from cloudinary`, err))
-					}).catch(err => console.error(`error while finding user`, err));
-
-				// upload image to cloudinary and save doc to database
-				cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
-					.then(result => {
-						userProfile.file = {};
-						userProfile.file.url = result.url;
-						userProfile.file.public_id = result.public_id;
-						// save in mongoDB
-						updateUserandRedirect(query, userProfile, req, res);
-					})
-					.catch(err => console.error(`error while uploading to cloudinary`, err))
-			}
-
+			// upload image to cloudinary and save doc to database
+			cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
+				.then(result => {
+					userProfile.file = {};
+					userProfile.file.url = result.url;
+					userProfile.file.public_id = result.public_id;
+					// save in mongoDB
+					updateUserandRedirect(query, userProfile, req, res);
+				})
+				.catch(err => console.error(`error while uploading to cloudinary`, err))
 		}
+
 	}
 });
 
@@ -312,6 +316,10 @@ function checkFileType(file, cb) {
 	} else {
 		cb('Error: Images Only!');
 	}
+}
+
+function isEmptyObj(obj) {
+	return Object.keys(obj).length === 0 && obj.constructor === Object;
 }
 
 

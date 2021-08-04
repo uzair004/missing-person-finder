@@ -36,8 +36,9 @@ block content
 					.preview-images
 						if user.file && user.file.url
 							img(src=user.file.url id="Profile_Image")
-						else 
-							img(src="/mpf/male.webp" style="width:250px;height:200px;display:block;")
+						else
+							img(src="/mpf/male.webp" id="Profile_Image" style="width:250px;height:200px;display:block;")
+					
 
 			br
 			input(type="text" value=user.file name="oldFileCheck" style="display:none")

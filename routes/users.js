@@ -174,35 +174,35 @@ router.post('/profile/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 	userProfile.contact = req.body.contact;
 
 	const errors = validationResult(req);
-	console.log('Req receved')
 	if (!errors.isEmpty()) {
 		res.render('profile', {
 			errors: errors.array(),
 			user: userProfile
 		});
 	} else {
-		console.log('into else block')
 		let query = { _id: req.params.id };
 		// noimage at all
-		if (isEmptyObj(req.body.oldFileCheck) && isEmptyObj(req.file)) {
+		if (req.body.oldFileCheck == '' && req.file == undefined) {
 			updateUserandRedirect(query, userProfile, req, res);
 			// old image availabel ? use it
-		} else if (!isEmptyObj(req.body.oldFileCheck) && isEmptyObj(req.file)) {
+		} else if (req.body.oldFileCheck != '' && req.file === undefined) {
 			userProfile.file = JSON.parse(req.body.oldFileCheck);
 			updateUserandRedirect(query, userProfile, req, res)
 
-		} else if (!isEmptyObj(req.body.oldFileCheck) && !isEmptyObj(req.file)) {
-			console.log('oldFilecheck value', req.body.oldFileCheck)
-			console.log('file value: ', req.file)
+		} else if (req.file != undefined) {
+
 			// convert image buffer to base64
 			const imgAsBase64 = dataUri(req).content;
 
+			let query = { _id: req.user._id }
+			const currentUser = await User.findOne({ query });
+
 			// delete old image from cloudinary
-			User.findOne({ _id: req.params.id })
-				.then(foundUser => {
-					cloudinary.uploader.destroy(foundUser.file.public_id)
-						.catch(err => console.error(`error while deleting image from cloudinary`, err))
-				}).catch(err => console.error(`error while finding user`, err));
+			if (userProfile.file && userProfile.file.url) {
+				cloudinary.uploader.destroy(foundUser.file.public_id)
+					.catch(err => console.error(`error while deleting image from cloudinary`, err))
+			}
+
 
 			// upload image to cloudinary and save doc to database
 			cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
@@ -306,10 +306,5 @@ function checkFileType(file, cb) {
 		cb('Error: Images Only!');
 	}
 }
-
-function isEmptyObj(obj) {
-	return Object.keys(obj).length === 0 && obj.constructor === Object;
-}
-
 
 module.exports = router;

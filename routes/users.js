@@ -52,7 +52,6 @@ router.post('/register', upload, cloudinaryConfig, [
 	check('name', 'Name is required').notEmpty(),
 	check('email', 'Email is required').notEmpty(),
 	check('email', 'Email is not valid').isEmail(),
-	check('username', 'Username is required').notEmpty(),
 	check('password', 'Password is required').notEmpty(),
 	check('password2', 'Passwords do not match').custom((value, { req, loc, path }) => {
 		if (value !== req.body.password) {
@@ -71,18 +70,9 @@ router.post('/register', upload, cloudinaryConfig, [
 			}
 		})
 	}).bail(),
-	check('username', 'username already taken').custom((value, { req, loc, path }) => {
-		return User.findOne({ "username": req.body.username }).then(foundUser => {
-			if (foundUser) {
-				return Promise.reject('Username already taken');
-			} else {
-				Promise.resolve(value);
-			}
-		})
-	}),
 ], async function (req, res) {
 
-	const { name, email, contact, username, password, password2 } = req.body;
+	const { name, email, contact, password, password2 } = req.body;
 
 	const errors = validationResult(req);
 
@@ -95,7 +85,6 @@ router.post('/register', upload, cloudinaryConfig, [
 			name: name,
 			email: email,
 			contact: contact,
-			username: username,
 			password: password,
 			file: {},
 			MissingPerson: 0,

@@ -73,7 +73,8 @@ block content
 					option(value="bold") Bold
 			#form-group
 				label Country*:
-				input.form-control(name="country", type='text' value=person.Country)
+				input.form-control(name="country", type='text' list='countries' class="search" value=person.Country)
+				datalist(id="countries")
 			#form-group
 				label City*:
 				input.form-control(name="city", type='text' value=person.City)
@@ -102,7 +103,10 @@ block content
 			input(type="text" value=person.Image name="oldFileCheck" style="display:none")
 
 			input.btn.btn-primary(type='submit',value='Update')
+
+
 	script.
+
 		document.getElementById("gender").value ='#{person.Gender}';
 		if('#{person.Gender}' === "true") {
 			document.getElementById("Check1").checked = true;
@@ -114,3 +118,43 @@ block content
 		document.getElementById("eyeColor").value ='#{person.EyeColor}';
 		document.getElementById("hair").value ='#{person.Hair}';
 		document.getElementById("currentStatus").value ='#{person.CurrentStatus}';
+		document.querySelector(".search").innerHTML = '#{person.country}'
+
+		//- populate country drop down
+		const endpoint = 'https://gist.githubusercontent.com/uzair004/a144dd0c94df2629f4d9428c0b21fdc9/raw/4d75a0a11a8969fa024ba2e9bb99c255ddc06789/countries-list-with-phone-and-flags.json';
+		const countries = [];
+
+		const searchInput = document.querySelector('.search');
+		const datalist = document.getElementById('countries');
+
+		fetch(endpoint)
+			.then(blob => {
+				return blob.json();
+			})
+			.then( data => {
+				countries.push(...data)
+				return;
+			});
+
+		function findMatches(wordToMatch, cities) {
+			return countries.filter(country => {
+				const regex = new RegExp(wordToMatch, 'gi');
+				return country.value.match(regex);
+			});
+		}
+
+		function displayMatches() {
+			const matchArr = findMatches(this.value, countries);
+			const html = matchArr.map(country => {
+				const regex = new RegExp(this.value, 'gi');
+				const countryName = country.value.replace(regex, `${this.value}`)
+
+				return `<option>${countryName}</option>`;
+
+			}).join('');
+			datalist.innerHTML = html;
+
+		}
+
+		searchInput.addEventListener('change', displayMatches);
+		searchInput.addEventListener('keyup', displayMatches);		

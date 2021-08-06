@@ -11,16 +11,19 @@ block content
 	.bg-light.p-4
 		form(method='POST', action='/person/missing/'+user._id enctype="multipart/form-data")
 			#form-group
-				label Name*:
-				input.form-control(name="name", type='text', placeholder='John Doe')
+				label Name
+				span.text-danger *
+				input.form-control(name="name", type='text', placeholder='missing person name')
 			#form-group
-				label Gender*:
+				label Gender
+				span.text-danger *
 				select.form-control(name="gender")
 					option(value="male" selected) Male
 					option(value="female") Female
 					option(value="other") Other
 			#form-group
-				label.d-block Mental Disorder*:
+				label Mental Disorder
+				span.text-danger *
 				div.form-check.form-check-inline
 					.form-check
 						input(type="radio" value="true" name="mentalStatus").form-check-input#Check1
@@ -29,22 +32,30 @@ block content
 						input(type="radio" value="false" name="mentalStatus").form-check-input#Check2
 						label(for="Check2").form-check-label.text-secondary No
 			#form-group
-				label Body Type*:
+				label Body Type
+				span.text-danger *
 				select.form-control(name="body")
 					option(value="skinny" selected) Skinny
 					option(value="normal") Normal
 					option(value="fat") Fat
 			#form-group
-				label Age (years)*:
+				label Age
+				span.text-danger *
+				span.text-black.small   (years)
 				input.form-control(name="age", type='number' value=22)
 			#form-group
-				label Weight (approx Kg)*:
+				label Weight
+				span.text-danger *
+				span.text-black.small   (approx Kg)
 				input.form-control(name="weight", type='number' value=55)
 			#form-group
-				label Height (cm)*:
+				label Height
+				span.text-danger *
+				span.text-black.small   (cm)
 				input.form-control(name="height", type='number' value=150)
 			#form-group
-				label Skin Color*:
+				label Skin Color
+				span.text-danger *
 				select.form-control(name="skinColor")
 					option(value="light" selected) Light
 					option(value="fair") Fair
@@ -55,7 +66,8 @@ block content
 					option(value="dark") Dark Brown
 					option(value="black") Black
 			#form-group
-				label Eye Color*:
+				label Eye Color
+				span.text-danger *
 				select.form-control(name="eyeColor")
 					option(value="amber" selected) Amber
 					option(value="blue") Blue
@@ -65,7 +77,8 @@ block content
 					option(value="hazel") Hazel
 					option(value="red") Red and Violet
 			#form-group
-				label Hair Type*:
+				label Hair Type
+				span.text-danger *
 				select.form-control(name="hair")
 					option(value="straight" selected) Straight
 					option(value="wavy") Wavy
@@ -73,25 +86,31 @@ block content
 					option(value="coily") Coily
 					option(value="bold") Bold
 			#form-group
-				label Country*:
-				input.form-control(name="country", type='text' list='countries' class="search")
+				label Country
+				span.text-danger *
+				input.form-control(name="country", type='text' list='countries' class="search" placeholder="country name")
 				datalist(id="countries")
 			#form-group
-				label City*:
-				input.form-control(name="city", type='text')
+				label City
+				span.text-danger *
+				input.form-control(name="city", type='text' placeholder="city name")
 			#form-group
-				label Date of Missing:
+				label Date of Missing
+				span.text-danger *
 				input.form-control(name="dateOfMissing", type='date')
 			#form-group
-				label Current Status*:
+				label Current Status
+				span.text-danger *
 				select.form-control(name="currentStatus")
 					option(value="missing" selected) Missing
 					//- option(value="found") Found
 			#form-group
-				label Description:
-				textarea.form-control(name="description")
+				label Description
+				span.text-danger *
+				textarea.form-control(name="description" placeholder="more details")
 			.form-group
 				label Image
+				span.text-danger *
 				input#input-files.form-control-file.border(type='file', name='file')
 			.row
 				.col-sm-12

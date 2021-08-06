@@ -55,6 +55,9 @@ block content
 					td City
 					td(colspan="2")= person.City
 				tr
+					td Missing-date
+					td(colspan="2")= `${person.DateOfMissing.getDate()}-${person.DateOfMissing.getMonth() +1}-${person.DateOfMissing.getFullYear()}`
+				tr
 					td Current Status
 					td(colspan="2")= person.CurrentStatus
 		table.table.table-hover.table-dark

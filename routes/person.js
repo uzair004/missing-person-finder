@@ -70,7 +70,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 	check('age', 'age is required').notEmpty(),
 	check('weight', 'Weight is required').notEmpty(),
 	check('country', 'Country is required').notEmpty(),
-	check('city', 'City is required').notEmpty(),
+	check('address', 'address is required').notEmpty(),
 	check('description', 'Description is required').notEmpty(),
 	check('dateOfMissing', 'Date of Missing is required').notEmpty(),
 	check('dateOfMissing').custom((value, { req, location, path }) => {
@@ -87,7 +87,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			user: req.user
 		});
 	} else {
-		const { name, age, weight, country, city, dateOfMissing,
+		const { name, age, weight, country, address, dateOfMissing,
 			gender, mentalStatus, skinColor, eyeColor, hair, currentStatus,
 			body, height, description } = req.body;
 
@@ -98,7 +98,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			Height: height,
 			Weight: weight,
 			Country: country,
-			City: city,
+			Address: address,
 			MentalStatus: mentalStatus,
 			SkinColor: skinColor,
 			EyeColor: eyeColor,
@@ -166,7 +166,7 @@ router.post('/edit/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 	check('age', 'age is required').notEmpty(),
 	check('weight', 'Weight is required').notEmpty(),
 	check('country', 'Country is required').notEmpty(),
-	check('city', 'City is required').notEmpty(),
+	check('address', 'Address is required').notEmpty(),
 	check('description', 'Description is required').notEmpty()
 ], function (req, res) {
 	const errors = validationResult(req);
@@ -185,7 +185,7 @@ router.post('/edit/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		updatePerson.Height = req.body.height;
 		updatePerson.Weight = req.body.weight;
 		updatePerson.Country = req.body.country;
-		updatePerson.City = req.body.city;
+		updatePerson.Address = req.body.address;
 		updatePerson.MentalStatus = req.body.mentalStatus;
 		updatePerson.SkinColor = req.body.skinColor;
 		updatePerson.EyeColor = req.body.eyeColor;

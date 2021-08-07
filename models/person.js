@@ -26,7 +26,7 @@ let personSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	City: {
+	Address: {
 		type: String,
 		required: true
 	},

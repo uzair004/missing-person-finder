@@ -10,7 +10,8 @@ mixin searchForm
 					.col-md-3.col-sm-12.my-2.my-md-0
 						input.form-control.search-slt(type='text', placeholder='Name' name="name")
 					.col-md-3.col-sm-12.my-2.my-md-0
-						input.form-control.search-slt(type='text', placeholder='Country' name="country")
+						input.form-control.search-slt(name="country", type='text' list='countries' class="search" placeholder="country name")
+						datalist(id="countries")
 					.col-md-3.col-sm-12.my-2.my-md-0
 						select.form-control.search-slt(name="gender")
 							option(value="gender" selected) Gender
@@ -73,6 +74,7 @@ block header
 		+searchForm
 		+divider
 		+imageSearch
+
 block content
 	span(style="font-size:12px").text-light #{person.length} record found
 	h1 #{title}
@@ -102,3 +104,7 @@ block content
 				+imageSearch
 				br
 				h6.text-center.text-info Tip: Try a different Combination... Leave all fields empty to show all Missing Person Results
+
+	//- for populating country dropdown
+	script(src="/js/populateCountryDropdown.js")
+	

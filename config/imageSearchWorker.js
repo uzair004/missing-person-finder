@@ -6,7 +6,7 @@ const Human = require('@vladmandic/human').default;
 
 const myConfig = {
 	backend: 'tensorflow',
-	modelBasePath: 'file://imageProcessingModels/',
+	modelBasePath: 'file://ML_models/',
 	debug: 'true',
 	async: 'false',
 	face: {

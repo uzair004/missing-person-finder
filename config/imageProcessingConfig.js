@@ -25,7 +25,7 @@ facesDB = JSON.parse(fs.readFileSync(jsonFilePath));
 
 const myConfig = {
 	backend: 'tensorflow',
-	modelBasePath: 'file://imageProcessingModels/',
+	modelBasePath: 'file://ML_models/',
 	debug: 'true',
 	async: 'false',
 	face: {

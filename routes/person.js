@@ -293,12 +293,10 @@ router.post('/person_search', function (req, res) {
 	// All(Three) or No fields search
 	// no field search
 	if (req.body.gender == "gender" && req.body.name == '' && req.body.country == '') {
-		Person.find({})
-			.then(foundPeople => {
-				res.render('person_search', {
-					person: foundPeople
-				})
-			}).catch(err => console.error(`error while finding people in db `, err))
+		res.render('person_search', {
+			errors: [{ msg: 'please enter name, gender, or country to search' }],
+			person: []
+		})
 		return;
 	}
 	// Three fields search

@@ -167,7 +167,20 @@ footer {
     }
     .carousel-inner > .carousel-item, .carousel-inner > .carousel-item > img{
    		height: 80vh;
-}
+	}
+	.article-preview {
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	.article-preview-heading {
+		font-size: 1.2rem !important;
+	}
+	.article-image-preview {
+		display: block;
+		width: 100% !important;
+		height: auto;
+		margin: auto;
+	}
 }
 
 /* articles related pages*/
@@ -195,4 +208,30 @@ footer {
 /* About page*/
 #About_Header{
     background:transparent url('../mpf/about.webp') no-repeat center center /cover; 
+}
+
+/* Blog */
+.article-preview {
+	display: flex;
+}
+
+.article-preview-heading {
+	text-decoration: none;
+	font-size: 1.5rem;
+	color: black;
+	font-weight: 700;
+	text-decoration: none !important;
+}
+
+.read-more {
+	color: rgba(80, 20, 140, 1) !important;
+	font-weight: 500;
+	font-size: .9rem;
+	text-decoration: none;
+}
+
+.article-image-preview {
+	width: 20%;
+	height: 50%;
+	margin-left: auto;
 }

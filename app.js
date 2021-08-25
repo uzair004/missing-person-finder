@@ -131,6 +131,15 @@ app.get('/archive', (req, res) => {
 	}).sort({ _id: 'desc' });
 });
 
+// blog
+app.get('/blog', function (req, res) {
+	Article.find({}, function (err, articles) {
+		res.render('blog', {
+			articles: articles,
+		});
+	}).sort({ _id: 'asc' });
+})
+
 // Start Server
 app.listen(3000, function () {
 	console.log('Server started on port 3000...');

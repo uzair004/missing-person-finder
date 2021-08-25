@@ -1,0 +1,27 @@
+extends layout
+
+block header
+	#About_Header
+		h1(style="display:table-cell;text-align: center").align-middle Articles
+
+block content
+	h2 Articles
+	-var art = articles.length -1;
+		.d-flex.flex-column
+			while art >=0
+				if art > articles.length-3
+					.article-preview.mb-4.bg-white.p-4
+						.d-inline-block
+							a(href='/articles/'+articles[art]._id).article-preview-heading= articles[art].title
+							p.text-secondary= articles[art].body.substring(0, 300)  
+								a(href="href='/articles/'+articles[art]._id").read-more  Read More
+						img(src=articles[art].file.url).article-image-preview
+
+				else
+					.article-preview.mb-4.bg-white.p-4
+						.d-inline-block
+							a(href='/articles/'+articles[art]._id).article-preview-heading= articles[art].title
+							p.text-secondary= articles[art].body.substring(0, 300)  
+								a(href="href='/articles/'+articles[art]._id").read-more  Read More
+						img(src=articles[art].file.url).article-image-preview
+				-var art = art-1;

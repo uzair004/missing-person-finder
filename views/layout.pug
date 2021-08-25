@@ -17,39 +17,42 @@ html
 				button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExample07XL', aria-controls='navbarsExample07XL', aria-expanded='false', aria-label='Toggle navigation')
 					span.navbar-toggler-icon
 				#navbarsExample07XL.collapse.navbar-collapse.px-2
-					ul.navbar-nav.mr-auto.w-100
-						li.nav-item.active
-							a.nav-link(href='/')
-								| Home 
-								span.sr-only (current)
-						li.nav-item.order-1
-							a.nav-link(href="/services") Services
-						li.nav-item.order-1
-							a.nav-link(href="/about") About
-						li.nav-item.order-1
-							a.nav-link(href="/archive") Archive
-						li.nav-item.order-1
-							a.nav-link(href="/blog") Blog
+					ul.navbar-nav.d-lg-flex.justify-content-lg-between.w-100
+						.group-1.d-lg-flex
+							li.nav-item.active
+								a.nav-link(href='/')
+									| Home 
+									span.sr-only (current)
+							li.nav-item.order-1
+								a.nav-link(href="/services") Services
+							li.nav-item.order-1
+								a.nav-link(href="/about") About
+							li.nav-item.order-1
+								a.nav-link(href="/archive") Archive
+							li.nav-item.order-1
+								a.nav-link(href="/blog") Blog
 
-						if user
-							li.nav-item
-								a.nav-link(href='/articles/add') Add Article
-							li.nav-item
-								a.nav-link(href='/person/add/missing') Add MP
-							li.nav-item
-								a.nav-link(href='/person/edit/missing/'+user._id ) Edit MP
+
+						.group-2.d-lg-flex
+							if user
+								li.nav-item
+									a.nav-link(href='/articles/add') Add Article
+								li.nav-item
+									a.nav-link(href='/person/add/missing') Add MP
+								li.nav-item
+									a.nav-link(href='/person/edit/missing/'+user._id ) Edit MP
 							
-							ul.navbar-nav.order-2.ml-lg-auto
-								li.nav-item.dropdown.btn-primary
-									a#dropdown07XL.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false') Account
-									.dropdown-menu(aria-labelledby='dropdown07XL')
-										a.dropdown-item(href='/users/profile') Profile
-										a.dropdown-item(href='/users/logout') Logout
-						else
-							li.nav-item
-								a.nav-link(href='/users/register') Register
-							li.nav-item
-								a.nav-link(href='/users/login') Login
+								ul.navbar-nav.order-2.ml-lg-auto
+									li.nav-item.dropdown.btn-primary
+										a#dropdown07XL.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false') Account
+										.dropdown-menu(aria-labelledby='dropdown07XL')
+											a.dropdown-item(href='/users/profile') Profile
+											a.dropdown-item(href='/users/logout') Logout
+							else
+								li.nav-item
+									a.nav-link(href='/users/register') Register
+								li.nav-item
+									a.nav-link(href='/users/login') Login
 							
 					
 		#header

@@ -243,7 +243,18 @@ router.get('/:id', function (req, res) {
 });
 
 // Person Search Route
-router.post('/person_search', function (req, res) {
+router.post('/person_search', [
+	check('name', 'Please enter NAME of missing person').notEmpty(),
+], function (req, res) {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		res.render('person_search', {
+			errors: errors.array(),
+			person: [],
+		});
+		return;
+	}
+
 	// Single field search
 	if (req.body.name != '') {
 		if (req.body.gender == "gender" && req.body.country == '') {
@@ -252,30 +263,9 @@ router.post('/person_search', function (req, res) {
 			return;
 		}
 	}
-	else if (req.body.country != '') {
-		if (req.body.name == '' && req.body.gender == "gender") {
-			// search by country
-			singlefieldSearchAndShowRecords("Country", req.body.country, res);
-			return;
-		}
-	}
-	else if (req.body.gender != "gender") {
-		if (req.body.name == '' && req.body.country == '') {
-			// search by gender
-			singlefieldSearchAndShowRecords("Gender", req.body.gender, res);
-			return;
-		}
-	}
 
 	// Two fields search
-	if (req.body.name == '') {
-		if (req.body.gender != "gender" && req.body.country != '') {
-			// search by Gender and Country
-			twofieldSearchAndShowRecords("Gender", req.body.gender, "Country", req.body.country, res);
-			return;
-		}
-	}
-	else if (req.body.country == '') {
+	if (req.body.country == '') {
 		if (req.body.name != '' && req.body.gender != "gender") {
 			// search by Gender and Name
 			twofieldSearchAndShowRecords("Gender", req.body.gender, "Name", req.body.name, res);

@@ -161,7 +161,7 @@ router.get('/edit/:id', ensureAuthenticated, function (req, res) {
 });
 
 // Update Missing Person Process
-router.post('/edit/:id', ensureAuthenticated, upload, cloudinaryConfig, [
+router.post('/edit/:id', ensureAuthenticated, [
 	check('name', 'Name is required').notEmpty(),
 	check('age', 'age is required').notEmpty(),
 	check('weight', 'Weight is required').notEmpty(),
@@ -194,39 +194,8 @@ router.post('/edit/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 		updatePerson.CurrentStatus = req.body.currentStatus;
 		updatePerson.Description = req.body.description;
 
-		// no new image uploaded, but older exist
-		if (req.body.oldFileCheck != '' && req.file === undefined) {
-			updatePerson.file = JSON.parse(req.body.oldFileCheck);
-			updatePersonandRedirect(query, updatePerson, req, res);
-			// no pic at all
-		} else if (req.file === undefined) {
-			delete updatePerson.file;
-			updatePersonandRedirect(query, updatePerson, req, res);
-		}
-		else {
-			// convert image buffer to base64
-			const imgAsBase64 = dataUri(req).content;
+		updatePersonandRedirect(query, updatePerson, req, res)
 
-			Person.findById(query)
-				.then(Doc => {
-
-					// delete person image from cloudinary
-					if (Doc.Image.public_id) {
-						cloudinary.uploader.destroy(Doc.Image.public_id).catch(err => console.error(`error while deleting pic`, err));
-					}
-
-					// upload person new pic to cloudinary
-					cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath })
-						.then(result => {
-							updatePerson.Image = {};
-							updatePerson.Image.url = result.url;
-							updatePerson.Image.public_id = result.public_id;
-							// update the person in db
-							updatePersonandRedirect(query, updatePerson, req, res);
-						})
-				})
-				.catch(err => console.error(`error while looking for doc`, err));
-		}
 	}
 });
 

@@ -8,7 +8,7 @@ block header
 block content
 	h1 Edit Person
 	.bg-light.p-4
-		form(method='POST', action='/person/edit/'+person._id enctype="multipart/form-data")
+		form(method='POST', action='/person/edit/'+person._id)
 			#form-group
 				label Name
 				span.text-danger *
@@ -103,7 +103,7 @@ block content
 				label Description
 				span.text-danger *
 				textarea.form-control(name="description")=person.Description
-			.form-group
+			//- .form-group
 				label Image
 				span.text-danger *
 				input#input-files.form-control-file.border(type='file', name='file', value=person.Image)

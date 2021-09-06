@@ -5,7 +5,7 @@ block content
 		div(class="alert alert-danger") #{Photoerror}
 	h1 Register
 	.bg-dark.p-4
-		form(method='POST', action='/users/register' enctype="multipart/form-data")
+		form(method='POST', action='/users/register')
 			#form-group
 				label Name
 				span.text-danger *
@@ -26,14 +26,14 @@ block content
 				label Confirm Password
 				span.text-danger *
 				input.form-control(name="password2", type='password' autocomple="new-password")
-			.form-group
-				label.d-inline-block Profile Image 
-					span.text-white.small (optional)
-				input#input-files.form-control-file.border.text-dark(type='file', name='file')
-			.row
-				.col-sm-12
-					.preview-images
-						img#Profile_Image
+			//- .form-group
+			//- 	label.d-inline-block Profile Image 
+			//- 		span.text-white.small (optional)
+			//- 	input#input-files.form-control-file.border.text-dark(type='file', name='file')
+			//- .row
+			//- 	.col-sm-12
+			//- 		.preview-images
+			//- 			img#Profile_Image
 
 			br
 			input.btn.btn-primary(type='submit',value='Create Account')

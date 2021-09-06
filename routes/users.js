@@ -48,7 +48,7 @@ router.get('/register', function (req, res) {
 });
 
 // Register Process
-router.post('/register', upload, cloudinaryConfig, [
+router.post('/register', cloudinaryConfig, [
 	check('name', 'Name is required').notEmpty(),
 	check('email', 'Email is required').notEmpty(),
 	check('email', 'Email is not valid').isEmail(),
@@ -95,33 +95,13 @@ router.post('/register', upload, cloudinaryConfig, [
 		// hash password
 		newUser.password = await bcrypt.hash(newUser.password, 10);
 
-		if (req.file == undefined) {
-			// save in mongoDB
-			newUser.save()
-				.then(result => {
-					req.flash('success', 'You are now registered and can log in');
-					res.redirect('/users/login');
-				})
-				.catch(err => console.error(`error while saving to database`, err));
-		} else {
-			// convert image buffer to base64
-			const imgAsBase64 = dataUri(req).content;
-			// upload image to cloudinary and save doc to database
-			cloudinary.uploader.upload(imgAsBase64, { folder: userFolderPath })
-				.then(result => {
-					newUser.file.url = result.url;
-					newUser.file.public_id = result.public_id;
-					// save in mongoDB
-					newUser.save()
-						.then(result => {
-							req.flash('success', 'You are now registered and can log in');
-							res.redirect('/users/login');
-						})
-						.catch(err => console.error(`error while saving to database`, err));
-				})
-				.catch(err => console.error(`error while uploading to cloudinary`, err))
-		}
-
+		// save in mongoDB
+		newUser.save()
+			.then(result => {
+				req.flash('success', 'You are now registered and can log in');
+				res.redirect('/users/login');
+			})
+			.catch(err => console.error(`error while saving to database`, err));
 	}
 
 });

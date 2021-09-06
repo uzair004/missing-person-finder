@@ -68,7 +68,6 @@ router.get('/add/missing/', ensureAuthenticated, function (req, res) {
 router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 	check('name', 'Name is required').notEmpty(),
 	check('age', 'age is required').notEmpty(),
-	check('weight', 'Weight is required').notEmpty(),
 	check('country', 'Country is required').notEmpty(),
 	check('address', 'address is required').notEmpty(),
 	check('description', 'Description is required').notEmpty(),
@@ -87,16 +86,14 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			user: req.user
 		});
 	} else {
-		const { name, age, weight, country, address, dateOfMissing,
+		const { name, age, country, address, dateOfMissing,
 			gender, mentalStatus, skinColor, eyeColor, hair, currentStatus,
-			body, height, description } = req.body;
+			body, description } = req.body;
 
 		let newPerson = new Person({
 			Name: name,
 			Body: body,
 			Age: age,
-			Height: height,
-			Weight: weight,
 			Country: country,
 			Address: address,
 			MentalStatus: mentalStatus,
@@ -164,7 +161,6 @@ router.get('/edit/:id', ensureAuthenticated, function (req, res) {
 router.post('/edit/:id', ensureAuthenticated, [
 	check('name', 'Name is required').notEmpty(),
 	check('age', 'age is required').notEmpty(),
-	check('weight', 'Weight is required').notEmpty(),
 	check('country', 'Country is required').notEmpty(),
 	check('address', 'Address is required').notEmpty(),
 	check('description', 'Description is required').notEmpty()
@@ -182,8 +178,6 @@ router.post('/edit/:id', ensureAuthenticated, [
 		updatePerson.Name = req.body.name;
 		updatePerson.Body = req.body.body;
 		updatePerson.Age = req.body.age;
-		updatePerson.Height = req.body.height;
-		updatePerson.Weight = req.body.weight;
 		updatePerson.Country = req.body.country;
 		updatePerson.Address = req.body.address;
 		updatePerson.MentalStatus = req.body.mentalStatus;

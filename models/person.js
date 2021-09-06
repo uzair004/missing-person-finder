@@ -14,14 +14,6 @@ let personSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	Height: {
-		type: Number,
-		required: true
-	},
-	Weight: {
-		type: Number,
-		required: true
-	},
 	Country: {
 		type: String,
 		required: true

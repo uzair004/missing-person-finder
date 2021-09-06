@@ -9,6 +9,16 @@ block content
 	h1 Edit Person
 	.bg-light.p-4
 		form(method='POST', action='/person/edit/'+person._id)
+			.row
+				.col-sm-12
+					.preview-images
+						if person.Image === null
+							if person.Gender == "female"
+								img(src="/mpf/missing_female.png")#Profile_Image
+							else
+								img(src="/mpf/missing_male.jpg")#Profile_Image
+						else
+							img(src=person.Image.url)#Profile_Image.mb-3
 			#form-group
 				label Name
 				span.text-danger *
@@ -103,20 +113,7 @@ block content
 				label Description
 				span.text-danger *
 				textarea.form-control(name="description")=person.Description
-			//- .form-group
-				label Image
-				span.text-danger *
-				input#input-files.form-control-file.border(type='file', name='file', value=person.Image)
-			.row
-				.col-sm-12
-					.preview-images
-						if person.Image === null
-							if person.Gender == "female"
-								img(src="/mpf/missing_female.png")#Profile_Image
-							else
-								img(src="/mpf/missing_male.jpg")#Profile_Image
-						else
-							img(src=person.Image.url)#Profile_Image
+			
 			br
 			input(type="text" value=person.Image name="oldFileCheck" style="display:none")
 

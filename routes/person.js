@@ -115,33 +115,47 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			});
 			return;
 		} else {
-			// convert image buffer to base64
-			const imgAsBase64 = dataUri(req).content;
 
-			// upload image to Cloudinary and save doc to mongodb
-			let done = await uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res);
+			// face recognition
+			let buffer = req.file.buffer;
+			let faces = await imageProcessor(buffer);
 
-			if (done) {
-				// increase user person counts by 1
-				let query = { _id: req.params.id };
-				let userUpdate = {};
-				userUpdate.MissingPerson = req.user.MissingPerson + 1;
-				User.updateOne(query, userUpdate)
-					.catch(err => console.error(`error while updating user person count`, err))
+			if (faces.length === 0) {
+				res.render('add_missing_person', {
+					user: req.user,
+					Photoerror: "No face found, please upload different image",
+				});
+			} else {
+				// convert image buffer to base64
+				const imgAsBase64 = dataUri(req).content;
 
-				let params = {};
-				params.message = `Name: ${newPerson.Name},
-				Age: ${newPerson.Age},
-				Gender: ${newPerson.Gender},
-				Address: ${newPerson.Address},${newPerson.Country},
-				Missing since: ${newPerson.DateOfMissing}`;
+				// upload image buffer to cloudinary
+				await uploadImage(imgAsBase64, newPerson, res);
 
-				params.link = "https://google.com";
-				params.call_to_action = {
-					"type": "LEARN_MORE", "value": { "link": "https://google.com" }
+				// save in mongoDB
+				let done = await saveDoc(newPerson);
+
+				// send response
+				req.flash('success', 'Missing Person Added');
+				res.redirect('/');
+
+				// update faces aray
+				if (faces.length !== 0) {
+					updateFacesArray(faces, newPerson.Image.url, newPerson.Name);
 				}
 
-				postToFacebook(params);
+				// write data to file
+				writeToFile(facesDB);
+
+				if (done) {
+					// increase user person counts by 1
+					let query = { _id: req.params.id };
+					await incPersonCount(query, req.user.MissingPerson);
+
+					// get data & post to facebook
+					await facebookPost(newPerson);
+				}
+
 			}
 
 		}
@@ -365,58 +379,64 @@ function updatePersonandRedirect(query, updatePerson, req, res) {
 		.catch(err => console.error(`error while updating doc`, err))
 }
 
-// upload image to cloudinary and save doc to mongoDb
-async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
-	// face recognition
-	let buffer = req.file.buffer;
-	let faces = await imageProcessor(buffer);
-
-	if (faces.length === 0) {
+// upload image to cloudinary
+async function uploadImage(imgAsBase64, newPerson, res) {
+	try {
+		const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
+		newPerson.Image.url = result.url;
+		newPerson.Image.public_id = result.public_id;
+	} catch (error) {
+		console.error(`error while uploading image to cloudinary `, error);
 		res.render('add_missing_person', {
 			user: req.user,
-			Photoerror: "No face found, please upload different image",
+			Photoerror: "Cannot upload image, possibly server problem, try again later",
 		});
+	}
+}
+
+// save doc to DB
+async function saveDoc(newPerson) {
+	try {
+		const savedDoc = await newPerson.save();
+		return true;
+	} catch (error) {
+		console.error('error while saving doc to database: ', error);
 		return false;
-	} else {
-		// upload image buffer to cloudinary
-		try {
-			const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
-			newPerson.Image.url = result.url;
-			newPerson.Image.public_id = result.public_id;
-		} catch (error) {
-			console.error(`error while uploading image to cloudinary `, error);
-			res.render('add_missing_person', {
-				user: req.user,
-				Photoerror: "Cannot upload image, possibly server problem, try again later",
-			});
-			return false;
-		}
-
-		let imageSource = newPerson.Image.url;
-		let personName = newPerson.Name;
-
-		// save in mongoDB
-		try {
-			const savedDoc = await newPerson.save();
-		} catch (error) {
-			console.error('error while saving doc to database: ', error);
-		}
-
-		// send response
-		req.flash('success', 'Missing Person Added');
-		res.redirect('/');
-
-		// update faces aray
-		faces.forEach(face => {
-			facesDB.push({ embedding: face.faceEmbedding, name: personName, source: imageSource })
-		})
-
-		// write to faces data to file and array
-		writeToFile(facesDB);
-
-		return true, imageSource;
 	}
 
+}
+
+// update faces array
+async function updateFacesArray(faces, personName, imageSource) {
+	faces.forEach(face => {
+		facesDB.push({ embedding: face.faceEmbedding, name: personName, source: imageSource })
+	})
+}
+
+// inc person posted by user
+async function incPersonCount(query, currentCount) {
+	let userUpdate = {};
+	userUpdate.MissingPerson = currentCount + 1;
+	User.updateOne(query, userUpdate)
+		.catch(err => console.error(`error while updating user person count`, err))
+
+}
+
+// set data & Post to fb
+async function facebookPost(newPerson) {
+	let params = {};
+	params.message = `Name: ${newPerson.Name},
+					Age: ${newPerson.Age},
+					Gender: ${newPerson.Gender},
+					Address: ${newPerson.Address},${newPerson.Country},
+					Missing since: ${newPerson.DateOfMissing}`;
+
+	params.link = "https://google.com";
+	params.call_to_action = {
+		"type": "LEARN_MORE", "value": { "link": "https://google.com" }
+	}
+
+	postToFacebook(params);
 }
 
 // Look for records using one field in db and show them 

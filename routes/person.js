@@ -7,6 +7,8 @@ const cloudinary = require('cloudinary').v2
 const cloudinaryConfig = require('../config/cloudinaryConfig');
 const DatauriParser = require('datauri/parser');
 
+const postToFacebook = require('../config/postToFacebook');
+
 const imageProcessor = require('../config/imageProcessingConfig').main;
 const writeToFile = require('../config/imageProcessingConfig').writeToFile;
 const facesDB = require('../config/imageProcessingConfig').facesDB;
@@ -31,7 +33,6 @@ const dataUri = req => parser.format(path.extname(req.file.originalname).toStrin
 let User = require("../models/user");
 // Bring in Person Model
 let Person = require("../models/person");
-const { promises } = require('dns');
 
 // Access Control
 function ensureAuthenticated(req, res, next) {
@@ -127,6 +128,20 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 				userUpdate.MissingPerson = req.user.MissingPerson + 1;
 				User.updateOne(query, userUpdate)
 					.catch(err => console.error(`error while updating user person count`, err))
+
+				let params = {};
+				params.message = `Name: ${newPerson.Name},
+				Age: ${newPerson.Age},
+				Gender: ${newPerson.Gender},
+				Address: ${newPerson.Address},${newPerson.Country},
+				Missing since: ${newPerson.DateOfMissing}`;
+
+				params.link = "https://google.com";
+				params.call_to_action = {
+					"type": "LEARN_MORE", "value": { "link": "https://google.com" }
+				}
+
+				postToFacebook(params);
 			}
 
 		}
@@ -399,7 +414,7 @@ async function uploadImageAndSaveDoc(req, imgAsBase64, newPerson, res) {
 		// write to faces data to file and array
 		writeToFile(facesDB);
 
-		return true;
+		return true, imageSource;
 	}
 
 }

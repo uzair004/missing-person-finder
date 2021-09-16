@@ -130,7 +130,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 				const imgAsBase64 = dataUri(req).content;
 
 				// upload image buffer to cloudinary
-				await uploadImage(imgAsBase64, newPerson, res);
+				await uploadImage(req, imgAsBase64, newPerson, res);
 
 				// save in mongoDB
 				let done = await saveDoc(newPerson);
@@ -141,7 +141,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 
 				// update faces aray
 				if (faces.length !== 0) {
-					updateFacesArray(faces, newPerson.Image.url, newPerson.Name);
+					updateFacesArray(faces, newPerson.Name, newPerson.Image.url);
 				}
 
 				// write data to file
@@ -380,7 +380,7 @@ function updatePersonandRedirect(query, updatePerson, req, res) {
 }
 
 // upload image to cloudinary
-async function uploadImage(imgAsBase64, newPerson, res) {
+async function uploadImage(req, imgAsBase64, newPerson, res) {
 	try {
 		const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
 		newPerson.Image.url = result.url;

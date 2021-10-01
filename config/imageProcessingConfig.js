@@ -18,10 +18,12 @@ let jsonFilePath = path.join(process.cwd(), 'public', 'faces', 'facesDB.json');
 
 // read recognized faces data
 log.info('Reading already recognized faces from file ');
-if (!fs.existsSync(jsonFilePath)) {
+if (!fs.existsSync(jsonFilePath) || isFileEmpty(jsonFilePath)) {
+	// create file & insert array
 	fs.writeFileSync(jsonFilePath, JSON.stringify([]), { flag: 'a' });
+} else {
+	facesDB = JSON.parse(fs.readFileSync(jsonFilePath));
 }
-facesDB = JSON.parse(fs.readFileSync(jsonFilePath));
 
 const myConfig = {
 	backend: 'tensorflow',
@@ -222,6 +224,17 @@ async function detectFromLinkOrFile(f) {
 	}
 
 	return result;
+}
+
+
+function isFileEmpty(jsonFilePath) {
+	fs.readFile(jsonFilePath, (err, data) => {
+		if (data.length === 0) {
+			return true;
+		} else {
+			return false;
+		}
+	})
 }
 
 module.exports = {

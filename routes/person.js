@@ -115,9 +115,12 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 			return;
 		} else {
 
-			// face recognition
 			let buffer = req.file.buffer;
+
+			const t0 = process.hrtime.bigint();
+			// face recognition
 			let faces = await imageProcessor(buffer);
+			calculateTimeLogger('match time', t0)
 
 			if (faces.length === 0) {
 				res.render('add_missing_person', {
@@ -128,11 +131,15 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 				// convert image buffer to base64
 				const imgAsBase64 = dataUri(req).content;
 
+				const u0 = process.hrtime.bigint();
 				// upload image buffer to cloudinary
 				await uploadImage(req, imgAsBase64, newPerson, res);
+				calculateTimeLogger('upload time', u0);
 
+				const d0 = process.hrtime.bigint();
 				// save in mongoDB
 				let done = await saveDoc(newPerson);
+				calculateTimeLogger('saveDoc time', d0);
 
 				// send response
 				req.flash('success', 'Missing Person Added');
@@ -153,8 +160,10 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 					}))
 				})
 
+				const w0 = process.hrtime.bigint();
 				// write data to file
 				writeToFile(facesDB);
+				calculateTimeLogger('writeToFile time', w0);
 
 				if (done) {
 					// increase user person counts by 1
@@ -480,4 +489,10 @@ function twofieldSearchAndShowRecords(searchField, searchTerm, searchField2, sea
 			}
 		})
 }
+
+function calculateTimeLogger(timeFor, t0) {
+	const t1 = process.hrtime.bigint();
+	console.log(`${timeFor}: `, Number((t1 - t0) / BigInt(1000000)));
+}
+
 module.exports = router;

@@ -19,7 +19,6 @@ const workerFilePath = path.join(process.cwd(), 'config', 'imageSearchWorker.js'
 const staticPool = new StaticPool({
 	size: 3,
 	task: workerFilePath,
-	workerData: facesDB
 });
 
 const personFolderPath = "Missing_Person_Finder/person_images/"
@@ -144,6 +143,16 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 					updateFacesArray(faces, newPerson.Name, newPerson.Image.url);
 				}
 
+				// send new record to threads to update their arrays
+				faces.forEach(face => {
+					staticPool.workers.forEach(worker => worker.postMessage({
+						toInsert: true,
+						embedding: face.faceEmbedding,
+						name: newPerson.Name,
+						source: newPerson.Image.url
+					}))
+				})
+
 				// write data to file
 				writeToFile(facesDB);
 
@@ -153,7 +162,7 @@ router.post('/missing/:id', ensureAuthenticated, upload, cloudinaryConfig, [
 					await incPersonCount(query, req.user.MissingPerson);
 
 					// get data & post to facebook
-					await facebookPost(newPerson);
+					// await facebookPost(newPerson);
 				}
 
 			}

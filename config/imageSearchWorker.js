@@ -35,19 +35,35 @@ const myConfig = {
 	hand: { enabled: false }
 }
 
+const facesDB = require('../config/imageProcessingConfig').facesDB;
+
 let human = new Human(myConfig);
 
 // Main thread will pass the data you need
 // through this event listener.
 parentPort.on('message', (faces) => {
-	const result = getMatch(faces, workerData); //faces was passed to func as arg, workerData was passed to threadPool
 
-	// return the result to main thread.
-	parentPort.postMessage(result);
+	if (faces.toInsert) {
+
+		delete faces.toInsert;
+		updateFacesDB(faces);
+
+	} else {
+		const result = getMatch(faces, facesDB); //faces was passed to func as arg
+		// return the result to main thread.
+		parentPort.postMessage(result);
+	}
+
 });
+
+// ----------------- FUNCTIONS ------------------
 
 function getMatch(faces, facesDB) {
 	const result = human.match(faces[0].faceEmbedding, facesDB, 0.40)
 
 	return result;
+}
+
+function updateFacesDB(data) {
+	facesDB.push(data);
 }

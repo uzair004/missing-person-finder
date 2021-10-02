@@ -261,6 +261,7 @@ router.post('/person_search', [
 		res.render('person_search', {
 			errors: errors.array(),
 			person: [],
+			user: req.user
 		});
 		return;
 	}
@@ -269,7 +270,7 @@ router.post('/person_search', [
 	if (req.body.name != '') {
 		if (req.body.gender == "gender" && req.body.country == '') {
 			// search by name
-			singlefieldSearchAndShowRecords("Name", req.body.name, res);
+			singlefieldSearchAndShowRecords("Name", req.body.name, res, req);
 			return;
 		}
 	}
@@ -278,14 +279,14 @@ router.post('/person_search', [
 	if (req.body.country == '') {
 		if (req.body.name != '' && req.body.gender != "gender") {
 			// search by Gender and Name
-			twofieldSearchAndShowRecords("Gender", req.body.gender, "Name", req.body.name, res);
+			twofieldSearchAndShowRecords("Gender", req.body.gender, "Name", req.body.name, res, req);
 			return;
 		}
 	}
 	else if (req.body.gender == "gender") {
 		if (req.body.name != '' && req.body.country != '') {
 			// search by Name and Country
-			twofieldSearchAndShowRecords("Name", req.body.name, "Country", req.body.country, res);
+			twofieldSearchAndShowRecords("Name", req.body.name, "Country", req.body.country, res, req);
 			return;
 		}
 	}
@@ -295,7 +296,8 @@ router.post('/person_search', [
 	if (req.body.gender == "gender" && req.body.name == '' && req.body.country == '') {
 		res.render('person_search', {
 			errors: [{ msg: 'please enter name, gender, or country to search' }],
-			person: []
+			person: [],
+			user: req.user
 		})
 		return;
 	}
@@ -311,7 +313,8 @@ router.post('/person_search', [
 					console.error(`error while finding people in db `, err);
 				} else {
 					res.render('person_search', {
-						person: foundPeople
+						person: foundPeople,
+						user: req.user
 					})
 				}
 			});
@@ -324,7 +327,8 @@ router.post('/person_search_by_image', upload, async function (req, res,) {
 	if (req.file === undefined) {
 		res.render('person_search', {
 			errors: [{ msg: 'please upload an image for Image Search' }],
-			person: []
+			person: [],
+			user: req.user
 		})
 		return;
 	}
@@ -334,7 +338,8 @@ router.post('/person_search_by_image', upload, async function (req, res,) {
 	if (faces.length === 0) {
 		res.render('person_search', {
 			errors: [{ msg: 'Face N/A in your image, plz upload different image' }],
-			person: []
+			person: [],
+			user: req.user
 		})
 		return;
 	}
@@ -351,14 +356,16 @@ router.post('/person_search_by_image', upload, async function (req, res,) {
 	// send response to user
 	if (matchedResult.similarity === 0) {
 		res.render('person_search', {
-			person: []
+			person: [],
+			user: req.user
 		});
 	} else {
 
 		try {
 			let foundPeople = await Person.findOne({ "Name": matchedResult.name });
 			res.render('person_search', {
-				person: [foundPeople]
+				person: [foundPeople],
+				user: req.user
 			});
 		} catch (error) {
 			console.error('error while finding person in db: ', error);
@@ -458,7 +465,7 @@ async function facebookPost(newPerson) {
 }
 
 // Look for records using one field in db and show them 
-function singlefieldSearchAndShowRecords(searchField, searchTerm, res) {
+function singlefieldSearchAndShowRecords(searchField, searchTerm, res, req) {
 
 	Person.find()
 		.where(searchField, { $regex: new RegExp("^" + searchTerm, "i") })
@@ -467,14 +474,15 @@ function singlefieldSearchAndShowRecords(searchField, searchTerm, res) {
 				console.error(`error while finding people in db`, err)
 			} else {
 				res.render('person_search', {
-					person: foundPeople
+					person: foundPeople,
+					user: req.user
 				});
 			}
 		})
 }
 
 // Look for records using two fields in db and show them 
-function twofieldSearchAndShowRecords(searchField, searchTerm, searchField2, searchTerm2, res) {
+function twofieldSearchAndShowRecords(searchField, searchTerm, searchField2, searchTerm2, res, req) {
 
 	Person.find()
 		.where(searchField, { $regex: new RegExp("^" + searchTerm, "i") })
@@ -484,7 +492,8 @@ function twofieldSearchAndShowRecords(searchField, searchTerm, searchField2, sea
 				console.error(`error while finding people in db`, err)
 			} else {
 				res.render('person_search', {
-					person: foundPeople
+					person: foundPeople,
+					user: req.user
 				});
 			}
 		})

@@ -400,7 +400,7 @@ function updatePersonandRedirect(query, updatePerson, req, res) {
 // upload image to cloudinary
 async function uploadImage(req, imgAsBase64, newPerson, res) {
 	try {
-		const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath });
+		const result = await cloudinary.uploader.upload(imgAsBase64, { folder: personFolderPath, quality: 'auto', width: 1024, crop: "limit" });
 		newPerson.Image.url = result.url;
 		newPerson.Image.public_id = result.public_id;
 	} catch (error) {

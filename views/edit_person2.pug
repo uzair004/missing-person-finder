@@ -7,6 +7,12 @@ block header
 
 block content
 	h1 Edit Person
+	//- Found button
+	if(person.CurrentStatus === 'missing')
+		.bg-dark.p-4.ml-auto
+			form(method='POST', action='/person/edit/found/'+person._id)
+				input.btn.btn-success(type='submit',value='Mark as Found', name='found')
+	//- form update details 
 	.bg-light.p-4
 		form(method='POST', action='/person/edit/'+person._id)
 			.row
@@ -94,12 +100,6 @@ block content
 				span.text-danger *
 				input.form-control(name="address", type='text' value=person.Address)
 			#form-group
-				label Current Status
-				span.text-danger *
-				select.form-control(name="currentStatus" id="currentStatus")
-					option(value="missing") Missing
-					option(value="found") Found
-			#form-group
 				label Description
 				span.text-danger *
 				textarea.form-control(name="description")=person.Description
@@ -108,7 +108,6 @@ block content
 			input(type="text" value=person.Image name="oldFileCheck" style="display:none")
 
 			input.btn.btn-primary(type='submit',value='Update')
-
 
 	//- for populating country dropdown
 	script(src="/js/populateCountryDropdown.js")
@@ -124,6 +123,5 @@ block content
 		document.getElementById("skinColor").value ='#{person.SkinColor}';
 		document.getElementById("eyeColor").value ='#{person.EyeColor}';
 		document.getElementById("hair").value ='#{person.Hair}';
-		document.getElementById("currentStatus").value ='#{person.CurrentStatus}';
 		document.querySelector(".search").innerHTML = '#{person.country}'
 	

@@ -230,7 +230,6 @@ router.post('/edit/:id', ensureAuthenticated, [
 		updatePerson.EyeColor = req.body.eyeColor;
 		updatePerson.Hair = req.body.hair;
 		updatePerson.Gender = req.body.gender;
-		updatePerson.CurrentStatus = req.body.currentStatus;
 		updatePerson.Description = req.body.description;
 
 		updatePersonandRedirect(query, updatePerson, req, res)
@@ -372,6 +371,26 @@ router.post('/person_search_by_image', upload, async function (req, res,) {
 	}
 
 });
+
+// change missing status Route
+router.post('/edit/found/:id', ensureAuthenticated, async function (req, res) {
+	const query = { _id: req.params.id };
+	const updatePerson = {};
+	updatePerson.CurrentStatus = 'found';
+
+	Person.updateOne(query, updatePerson)
+		.then(response => {
+			req.flash('success', `Congrats! on finding ${response.Name}, help us continue by donating`);
+			res.redirect('/donate');
+			return;
+		})
+		.catch(err => {
+			console.error(`error while updating status, `, err)
+			req.flash('danger', `Oops! cant update status, try later`);
+			res.redirect('/');
+		});
+
+})
 
 // ---------- Functions ----------
 

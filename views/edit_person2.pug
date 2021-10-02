@@ -7,11 +7,15 @@ block header
 
 block content
 	h1 Edit Person
-	//- Found button
 	if(person.CurrentStatus === 'missing')
-		.bg-dark.p-4.ml-auto
+		.bg-dark.p-3.ml-auto
+			//- Found button
 			form(method='POST', action='/person/edit/found/'+person._id)
-				input.btn.btn-success(type='submit',value='Mark as Found', name='found')
+				input.btn.btn-success(type='submit',value='Mark as Found', name='found') 
+				//- whatsapp chat button
+				a(href="https://wa.me/923408279781?text=Hi%2C%20I%20want%20to%20run%20paid%20compaign%20to%20find%20someone.").ml-4.btn.btn-info.text-light
+					<i class="fab fa-whatsapp text-white"></i> Contact for Compaign
+		
 	//- form update details 
 	.bg-light.p-4
 		form(method='POST', action='/person/edit/'+person._id)

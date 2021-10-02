@@ -6,6 +6,13 @@ block header
 
 block content
 	.bg-light.p-4
+		//- person status badge
+		if(person.CurrentStatus === 'missing')
+			span.badge.badge-danger Missing
+		else
+			span.badge.badge-success Found
+
+		//- person pic
 		if person.Image.url === undefined
 			if person.Gender == "male"
 				img(src="/mpf/missing_male.jpg" class="missing-person-pic")

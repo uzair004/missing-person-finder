@@ -206,7 +206,6 @@ router.get('/edit/:id', ensureAuthenticated, function (req, res) {
 
 // Update Missing Person Process
 router.post('/edit/:id', ensureAuthenticated, [
-	check('name', 'Name is required').notEmpty(),
 	check('age', 'age is required').notEmpty(),
 	check('country', 'Country is required').notEmpty(),
 	check('address', 'Address is required').notEmpty(),
@@ -222,7 +221,6 @@ router.post('/edit/:id', ensureAuthenticated, [
 		let query = { _id: req.params.id };
 
 		let updatePerson = {};
-		updatePerson.Name = req.body.name;
 		updatePerson.Body = req.body.body;
 		updatePerson.Age = req.body.age;
 		updatePerson.Country = req.body.country;

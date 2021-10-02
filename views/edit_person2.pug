@@ -112,4 +112,18 @@ block content
 
 	//- for populating country dropdown
 	script(src="/js/populateCountryDropdown.js")
+	script.
+
+		document.getElementById("gender").value ='#{person.Gender}';
+		if('#{person.Gender}' === "true") {
+			document.getElementById("Check1").checked = true;
+		} else {
+			document.getElementById("Check2").checked = true;
+		}
+		document.getElementById("body").value ='#{person.Body}';
+		document.getElementById("skinColor").value ='#{person.SkinColor}';
+		document.getElementById("eyeColor").value ='#{person.EyeColor}';
+		document.getElementById("hair").value ='#{person.Hair}';
+		document.getElementById("currentStatus").value ='#{person.CurrentStatus}';
+		document.querySelector(".search").innerHTML = '#{person.country}'
 	

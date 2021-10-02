@@ -50,7 +50,9 @@ div.preview-images > img {
 	display: table
 }
 .card-img-top{
-	height: 200px;
+	width: 200;
+	height: 300px;
+	object-fit: cover;
 }
 .myList li{
 padding-left:0 !important;
@@ -104,8 +106,9 @@ footer {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 50%;
-	height: auto;
+	width: 30%;
+	height: 50%;
+	object-fit: cover;
 }
 
 /* Add Missing person page */

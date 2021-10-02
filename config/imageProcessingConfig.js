@@ -67,7 +67,6 @@ async function detector(input) {
 		log.info('Converting Image to Buffer')
 		buffer = await imageToBuffer(input);
 	}
-	log.info('Buffer value: ', buffer)
 
 	log.info('Decoding image')
 	let tensor = imageDecoder(buffer);

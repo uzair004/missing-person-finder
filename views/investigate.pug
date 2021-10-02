@@ -8,11 +8,11 @@ block content
 	.bg-light.p-4
 		if person.Image.url === undefined
 			if person.Gender == "male"
-				img(src="/mpf/missing_male.jpg" style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
+				img(src="/mpf/missing_male.jpg" class="missing-person-pic")
 			else
-				img(src="/mpf/missing_female.png" style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
+				img(src="/mpf/missing_female.png" class="missing-person-pic")
 		else
-			img(src=person.Image.url style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
+			img(src=person.Image.url class="missing-person-pic")
 		br
 		h2.text-center= person.Name
 		br
@@ -63,9 +63,9 @@ block content
 		h4.bg-info(style="color:white") Do you have any information about #{person.Name} ?
 		h4.bg-info(style="color:white") Yes? It would greatly help #{user.name} in the Search, Contact #{user.name}.
 		if user.file.url == undefined
-			img(src="/mpf/male.webp" style="width:250px;height:200px;display:block;margin-left:auto;margin-right:auto")
+			img(src="/mpf/male.webp" class="missing-person-pic")
 		else
-			img(src=user.file.url style="width:250px;height:250px;display:block;margin-left:auto;margin-right:auto")
+			img(src=user.file.url class="missing-person-pic")
 		br
 		table.table.table-hover.table-dark
 			tbody

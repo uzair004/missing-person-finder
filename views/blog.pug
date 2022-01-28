@@ -14,7 +14,7 @@ block content
 						.d-inline-block
 							a(href='/articles/'+articles[art]._id).article-preview-heading= articles[art].title
 							p.text-secondary= articles[art].body.substring(0, 300)  
-								a(href="href='/articles/'+articles[art]._id").read-more  Read More
+								a(href="/articles/"+articles[art]._id).read-more  Read More
 						img(src=articles[art].file.url).article-image-preview
 
 				else
@@ -22,6 +22,6 @@ block content
 						.d-inline-block
 							a(href='/articles/'+articles[art]._id).article-preview-heading= articles[art].title
 							p.text-secondary= articles[art].body.substring(0, 300)  
-								a(href="href='/articles/'+articles[art]._id").read-more  Read More
+								a(href="/articles/"+articles[art]._id).read-more  Read More
 						img(src=articles[art].file.url).article-image-preview
 				-var art = art-1;

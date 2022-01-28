@@ -59,7 +59,7 @@ parentPort.on('message', (faces) => {
 // ----------------- FUNCTIONS ------------------
 
 function getMatch(faces, facesDB) {
-	const result = human.match(faces[0].faceEmbedding, facesDB, 0.40)
+	const result = human.match(faces[0].faceEmbedding, facesDB, 0.55)
 
 	return result;
 }

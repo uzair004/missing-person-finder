@@ -431,7 +431,7 @@ router.post("/edit/found/:id", ensureAuthenticated, async function (req, res) {
 	Person.updateOne(query, updatePerson)
 		.then(response => {
 			req.flash('success', `Congrats! on finding ${response.Name}, help us continue by donating`);
-			res.redirect('/donate');
+			res.redirect('/archive');
 			return;
 		})
 		.catch((err) => {

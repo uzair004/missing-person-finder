@@ -283,7 +283,8 @@ router.get("/:id", function (req, res) {
 // Person Search Route
 router.post(
 	"/person_search",
-	[check("name", "Please enter NAME of missing person").notEmpty()],
+	[check("country", "Country name is required").notEmpty()],
+	[check("gender", "gender is required").not().equals("gender")],
 	function (req, res) {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -293,26 +294,30 @@ router.post(
 				user: req.user,
 			});
 			return;
-		}
+		}  
+		
+    	const ageRange = req.body.ageRange.split("-");
 
 		// Single field search
 		if (req.body.name != "") {
 			if (req.body.gender == "gender" && req.body.country == "") {
 				// search by name
-				singlefieldSearchAndShowRecords("Name", req.body.name, res, req);
+				singlefieldSearchAndShowRecords("Name", req.body.name, "Age", ageRange, res, req);
 				return;
 			}
 		}
 
 		// Two fields search
-		if (req.body.country == "") {
-			if (req.body.name != "" && req.body.gender != "gender") {
+		if (req.body.name == "") {
+			if (req.body.country != "" && req.body.gender != "gender") {
 				// search by Gender and Name
 				twofieldSearchAndShowRecords(
 					"Gender",
 					req.body.gender,
 					"Name",
 					req.body.name,
+					"Age",
+					ageRange,
 					res,
 					req
 				);
@@ -326,6 +331,8 @@ router.post(
 					req.body.name,
 					"Country",
 					req.body.country,
+          			"Age",
+          			req.body.ageRange,
 					res,
 					req
 				);
@@ -338,7 +345,8 @@ router.post(
 		if (
 			req.body.gender == "gender" &&
 			req.body.name == "" &&
-			req.body.country == ""
+			req.body.country == "" &&
+      		req.body.ageRange == "0,1000"
 		) {
 			res.render("person_search", {
 				errors: [{ msg: "please enter name, gender, or country to search" }],
@@ -348,12 +356,15 @@ router.post(
 			return;
 		}
 		// Three fields search
-		else {
+		else if(req.body.gender !== "gender" &&
+				req.body.name !== "" && req.body.country !== "" && req.body.ageRange)
+				{
 			// search by Name, Gender, Country
 			Person.find()
 				.where("Gender", { $regex: new RegExp("^" + req.body.gender, "i") })
 				.where("Country", { $regex: new RegExp("^" + req.body.country, "i") })
 				.where("Name", { $regex: new RegExp("^" + req.body.name, "i") })
+				.where("Age").gte(ageRange[0]).lte(ageRange[1])
 				.exec((err, foundPeople) => {
 					if (err) {
 						console.error(`error while finding people in db `, err);
@@ -541,9 +552,11 @@ async function facebookPost(newPerson) {
 }
 
 // Look for records using one field in db and show them
-function singlefieldSearchAndShowRecords(searchField, searchTerm, res, req) {
+function singlefieldSearchAndShowRecords(searchField, searchTerm, age, ageRange, res, req) {
+
 	Person.find()
 		.where(searchField, { $regex: new RegExp("^" + searchTerm, "i") })
+    	.where(age).gte(ageRange[0]).lte(ageRange[1])
 		.exec((err, foundPeople) => {
 			if (err) {
 				console.error(`error while finding people in db`, err);
@@ -562,12 +575,16 @@ function twofieldSearchAndShowRecords(
 	searchTerm,
 	searchField2,
 	searchTerm2,
+  	age,
+  	ageRange,
 	res,
 	req
 ) {
+	console.log(searchField, searchTerm, searchField2, searchTerm2, age, ageRange)
 	Person.find()
 		.where(searchField, { $regex: new RegExp("^" + searchTerm, "i") })
 		.where(searchField2, { $regex: new RegExp("^" + searchTerm2, "i") })
+    	.where(age).gte(ageRange[0]).lte(ageRange[1])
 		.exec((err, foundPeople) => {
 			if (err) {
 				console.error(`error while finding people in db`, err);

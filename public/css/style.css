@@ -7,7 +7,8 @@
 	margin-top:-30px;
 }
 .bg4{
-    background:transparent url('../mpf/bg4.webp') no-repeat center center /cover;
+    /* background:transparent url('../mpf/bg4.webp') no-repeat center center /cover; */
+	background-color: rgba(0, 0, 0, 0.87);
 }
 
 /* Global unregistered layout (extended by login and register pages) */

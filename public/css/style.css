@@ -175,7 +175,7 @@ footer {
         background: rgba(26, 70, 104, 0.51);
     }
     .carousel-inner > .carousel-item, .carousel-inner > .carousel-item > img{
-   		height: 50vh;
+   		height: 90vh;
 }
 }
 

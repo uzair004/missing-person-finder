@@ -19,4 +19,5 @@ block content
 		if user
 			if user.id == article.author
 				a.btn.btn-success.mr-4(href='/articles/edit/'+article._id style="color:white") Edit Article
+			if user.id == article.author || user.role == 'admin'
 				a.btn.btn-danger.delete-article(href="#", data-id= article._id style="color:white") Delete

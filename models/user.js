@@ -27,6 +27,11 @@ const UserSchema = mongoose.Schema({
 	},
 	MissingPerson: {
 		type: Number
+	},
+	role: {
+		type: String,
+		required: false,
+		default: 'customer'
 	}
 });
 

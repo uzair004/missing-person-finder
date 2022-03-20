@@ -196,6 +196,8 @@ router.post('/add', ensureAuthenticated, upload, cloudinaryConfig, [
 	}
 });
 
+
+// add comment POST route
 router.post("/:id/comments/", ensureAuthenticated, [
 	check('comment', "Cannot post empty comments").notEmpty().escape(),
 	check('comment', "Cannot post empty comments").isLength(2)
@@ -219,7 +221,7 @@ router.post("/:id/comments/", ensureAuthenticated, [
 		})
 	}
 
-	
+
 
 })
 

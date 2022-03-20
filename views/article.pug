@@ -23,7 +23,7 @@ block content
 			if user.id == article.author || user.role == 'admin'
 				a.btn.btn-danger.delete-article(href="#", data-id= article._id style="color:white") Delete
 
-	//- comments section
+	//- comments section (add new comment)
 	.bg-light.p-4
 		br
 		if user != null 
@@ -33,3 +33,19 @@ block content
 					textarea.form-control.w-50(name="text", cols="20", rows="5") 
 				br
 				input.btn.btn-primary(type="submit", value="Comment")
+
+	//- show comments
+	if(comments)
+		br
+		- var totalComments = comments.length - 1;
+		.bg-light.p-4
+			h4 Comments (#{totalComments < 0 ? '0' : totalComments})
+			hr
+			while totalComments >= 0
+				.d-flex.flex-column
+					div.d-flex
+						span(class="fas fa-user").ml-2.mr-2.text-muted
+						.text-small.text-muted #{comments[totalComments].authorUsername}
+					div.ml-4 #{comments[totalComments].text}
+				hr
+				- totalComments = totalComments - 1;

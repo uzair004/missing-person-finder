@@ -39,7 +39,7 @@ block content
 		br
 		- var totalComments = comments.length - 1;
 		.bg-light.p-4
-			h4 Comments (#{totalComments < 0 ? '0' : totalComments})
+			h4 Comments (#{totalComments + 1})
 			hr
 			while totalComments >= 0
 				.d-flex.flex-column

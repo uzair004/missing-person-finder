@@ -57,9 +57,12 @@ router.get('/add', ensureAuthenticated, function (req, res) {
 router.get('/:id', function (req, res) {
 	Article.findById(req.params.id).then(foundArticle => {
 		User.findById(foundArticle.author).then(foundAuthor => {
-			res.render('article', {
-				article: foundArticle,
-				author: foundAuthor.name
+			Comment.find({articleId: foundArticle._id}).then(foundComments => {
+				res.render('article', {
+					article: foundArticle,
+					author: foundAuthor.name,
+					comments: foundComments
+				});
 			})
 		}).catch(err => console.error(`error while find user by id`, err))
 	}).catch(err => console.error(`error while find article by id`, err))

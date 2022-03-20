@@ -27,7 +27,7 @@ block content
 	.bg-light.p-4
 		br
 		if user != null 
-			form(method="POST", action=`/articles/comment/${article._id}`)
+			form(method="POST", action='/articles/comments/'+article._id)
 				#form-group
 					//- label Add Comment:
 					textarea.form-control.w-50(name="comment", cols="20", rows="5") 

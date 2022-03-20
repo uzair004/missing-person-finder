@@ -196,6 +196,33 @@ router.post('/add', ensureAuthenticated, upload, cloudinaryConfig, [
 	}
 });
 
+router.post("/:id/comments/", ensureAuthenticated, [
+	check('comment', "Cannot post empty comments").notEmpty().escape(),
+	check('comment', "Cannot post empty comments").isLength(2)
+], async function(req, res) {
+
+	const {id} = req.params;
+
+	const foundArticle = await Article.findById(id);
+	if(!foundArticle) {
+		return res.redirect('/');
+	}
+
+	const foundAuthor = await User.findById(foundArticle.author);
+
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		res.render('article', {
+			article: foundArticle,
+			author: foundAuthor.name,
+			errors: errors.array()
+		})
+	}
+
+	
+
+})
+
 // ----------- Functions ----------------
 
 // Check File Type

@@ -8,6 +8,9 @@ const cloudinaryConfig = require('../config/cloudinaryConfig');
 const DatauriParser = require('datauri/parser');
 require('dotenv').config();
 
+// comment model
+const Comment = require("../models/comment")
+
 const articleFolderPath = "Missing_Person_Finder/article_images/"
 
 const parser = new DatauriParser();
@@ -198,12 +201,13 @@ router.post('/add', ensureAuthenticated, upload, cloudinaryConfig, [
 
 
 // add comment POST route
-router.post("/:id/comments/", ensureAuthenticated, [
-	check('comment', "Cannot post empty comments").notEmpty().escape(),
-	check('comment', "Cannot post empty comments").isLength(2)
+router.post("/:id/comments/:userId", ensureAuthenticated, [
+	// check('comment', "Cannot post empty comments").notEmpty().escape(),
+	// check('comment', "Cannot post empty comments").isLength(2)
 ], async function(req, res) {
 
-	const {id} = req.params;
+	const {id, userId} = req.params;
+	const {text} = req.body;
 
 	const foundArticle = await Article.findById(id);
 	if(!foundArticle) {
@@ -221,6 +225,16 @@ router.post("/:id/comments/", ensureAuthenticated, [
 		})
 	}
 
+	let newComment = new Comment({
+		articleId: id,
+		authorUsername: foundAuthor.name,
+		authorId: foundAuthor.id,
+		text: text
+	});
+
+	await newComment.save();
+
+	res.redirect(`/articles/${id}`);
 
 
 })

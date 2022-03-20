@@ -6,6 +6,7 @@ block header
 
 block content
 	h1.text-md-center.text-sm-left.text-white.pb-4= article.title
+	//- article content section
 	.bg-light.p-4
 		br
 		if article.file != null
@@ -21,3 +22,14 @@ block content
 				a.btn.btn-success.mr-4(href='/articles/edit/'+article._id style="color:white") Edit Article
 			if user.id == article.author || user.role == 'admin'
 				a.btn.btn-danger.delete-article(href="#", data-id= article._id style="color:white") Delete
+
+	//- comments section
+	.bg-light.p-4
+		br
+		if user != null 
+			form(method="POST", action=`/articles/comment/${article._id}`)
+				#form-group
+					//- label Add Comment:
+					textarea.form-control.w-50(name="comment", cols="20", rows="5") 
+				br
+				input.btn.btn-primary(type="submit", value="Comment")

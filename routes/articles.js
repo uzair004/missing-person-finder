@@ -54,15 +54,23 @@ router.get('/add', ensureAuthenticated, function (req, res) {
 });
 
 // Get Single Article
-router.get('/:id', function (req, res) {
+router.get('/:id', async function (req, res) {
+
+	let currentUser = null;
+
+	if(req.isAuthenticated()) {
+		currentUser = req.user;
+	}
+
 	Article.findById(req.params.id).then(foundArticle => {
 		User.findById(foundArticle.author).then(foundAuthor => {
-			Comment.find({articleId: foundArticle._id}).then(foundComments => {
-				res.render('article', {
-					article: foundArticle,
-					author: foundAuthor.name,
-					comments: foundComments
-				});
+			Comment.find({articleId: foundArticle._id}).then(foundComments => {		
+					res.render('article', {
+						article: foundArticle,
+						author: foundAuthor.name,
+						comments: foundComments,
+						user: currentUser
+					});
 			})
 		}).catch(err => console.error(`error while find user by id`, err))
 	}).catch(err => console.error(`error while find article by id`, err))
@@ -209,8 +217,10 @@ router.post("/:id/comments/:userId", ensureAuthenticated, [
 	// check('comment', "Cannot post empty comments").isLength(2)
 ], async function(req, res) {
 
-	const {id, userId} = req.params;
+	const {id} = req.params;
 	const {text} = req.body;
+
+	const user = req.user;
 
 	const foundArticle = await Article.findById(id);
 	if(!foundArticle) {
@@ -230,8 +240,8 @@ router.post("/:id/comments/:userId", ensureAuthenticated, [
 
 	let newComment = new Comment({
 		articleId: id,
-		authorUsername: foundAuthor.name,
-		authorId: foundAuthor.id,
+		authorUsername: user.name,
+		authorId: user.id,
 		text: text
 	});
 

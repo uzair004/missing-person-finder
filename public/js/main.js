@@ -28,11 +28,26 @@ function deleteArticle(e) {
 		.catch(err => console.error(err))
 }
 
+// Delete article comment
+function deleteComment(e) {
+	$target = $(e.target);
+	const id = $target.attr('data-id');
+	const articleId = $target.attr('data-article')
+	console.log(id, articleId)
+	fetch(`/articles/${articleId}/comments/${id}`, { method: 'DELETE' })
+	.then(response => {
+		window.location.href = `/articles/${articleId}`
+	})
+	.catch(err => console.error(err))
+}
+
 // Event Listeners
 
 document.addEventListener('DOMContentLoaded', function () {
 	// Delete article
 	$('.delete-article').on('click', deleteArticle);
+
+	$('.delete-comment').on('click', deleteComment);
 
 	// Image Preview
 	$("#input-files").on("change", function () {

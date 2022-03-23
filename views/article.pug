@@ -50,7 +50,7 @@ block content
 					if user 
 						if `${user._id}` == `${comments[totalComments].authorId}` || user.role == "admin"
 							.d-flex
-								a.ml-5.text-muted(href=`/articles/${article._id}/comment/${comments[totalComments]._id}` style="font-size: 12px") Edit
-								a.ml-2.text-muted(href=`/articles/${article._id}/comment/${comments[totalComments]._id}` style="font-size: 12px") Delete
+								a.ml-5.text-muted(href=`/articles/${article._id}/comments/${comments[totalComments]._id}` style="font-size: 12px") Edit
+								a.ml-2.text-muted.delete-comment(href="#" data-id= comments[totalComments]._id data-article= article._id style="font-size: 12px") Delete
 				hr
 				- totalComments = totalComments - 1;

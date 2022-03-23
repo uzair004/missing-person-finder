@@ -46,11 +46,11 @@ block content
 					div.d-flex
 						span(class="fas fa-user").ml-2.mr-2.text-muted
 						.text-small.text-muted #{comments[totalComments].authorUsername}
-					div.ml-4 #{comments[totalComments].text}
-					//- if user
-						if `${user._id}` == `${comments[totalComments].authorId}`
-							span #{`${user._id}` == `${comments[totalComments].authorId}`}
-							span #{user.id}
-							a.btn.btn-success(href=`/articles/${article._id}/comment/${comments[totalComments]._id}` style="color: white") Edit comment
+					div.ml-5 #{comments[totalComments].text}
+					if user 
+						if `${user._id}` == `${comments[totalComments].authorId}` || user.role == "admin"
+							.d-flex
+								a.ml-5.text-muted(href=`/articles/${article._id}/comment/${comments[totalComments]._id}` style="font-size: 12px") Edit
+								a.ml-2.text-muted(href=`/articles/${article._id}/comment/${comments[totalComments]._id}` style="font-size: 12px") Delete
 				hr
 				- totalComments = totalComments - 1;

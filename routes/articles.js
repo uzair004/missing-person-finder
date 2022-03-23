@@ -252,6 +252,18 @@ router.post("/:id/comments/:userId", ensureAuthenticated, [
 
 })
 
+router.delete("/:id/comments/:commentId", ensureAuthenticated, function(req, res) {
+	const {commentId, id: articleId} = req.params;
+
+	let query = { _id: commentId };
+
+	Comment.deleteOne(query).then(deletedComment => {
+		req.flash('danger', 'Comment Deleted');
+		res.send('Success');
+	}).catch(err => console.error(`error while deleting article from db`, err))
+
+})
+
 // ----------- Functions ----------------
 
 // Check File Type

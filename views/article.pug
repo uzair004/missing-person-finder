@@ -54,3 +54,11 @@ block content
 								a.ml-2.text-muted.delete-comment(href="#" data-id= comments[totalComments]._id data-article= article._id style="font-size: 12px") Delete
 				hr
 				- totalComments = totalComments - 1;
+
+				//- edit comment 
+			if editComment
+				form(method="POST" action=href=`/articles/${article._id}/comments/${editComment._id}/update`)
+					#form-group
+						textarea.form-control.w-30(name="text", cols="10", rows="5")= editComment.text
+						br
+						input.btn.btn-primary(type="submit", value="Update comment")

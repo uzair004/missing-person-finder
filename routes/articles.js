@@ -264,6 +264,45 @@ router.delete("/:id/comments/:commentId", ensureAuthenticated, function(req, res
 
 })
 
+router.get("/:id/comments/:commentId", ensureAuthenticated, async function(req, res) {
+	const {commentId} = req.params;
+	const comment = await Comment.findById(commentId);
+
+	let currentUser = null;
+
+	if(req.isAuthenticated()) {
+		currentUser = req.user;
+	}
+
+	Article.findById(req.params.id).then(foundArticle => {
+		User.findById(foundArticle.author).then(foundAuthor => {
+			Comment.find({articleId: foundArticle._id}).then(foundComments => {		
+					res.render('article', {
+						article: foundArticle,
+						author: foundAuthor.name,
+						comments: foundComments,
+						user: currentUser,
+						editComment: comment
+					});
+			})
+		}).catch(err => console.error(`error while find user by id`, err))
+	}).catch(err => console.error(`error while find article by id`, err))
+
+});
+
+router.post("/:id/comments/:commentId/update", ensureAuthenticated, async function(req, res) {
+	const {id, commentId} = req.params;
+	const {text} = req.body;
+
+	const query = { _id: commentId };
+	const updatedComment = {
+		text: text
+	}
+	await Comment.updateOne(query, updatedComment);
+
+	res.redirect(`/articles/${id}`);
+})
+
 // ----------- Functions ----------------
 
 // Check File Type

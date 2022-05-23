@@ -12,7 +12,7 @@ block content
 		if article.file != null
 			img(src=article.file.url).d-block.w-100.h-auto.mx-auto
 		br
-		p= article.body
+		p(style="white-space: pre-wrap;")= article.body
 		hr
 		span.text-muted Author
 		h6.text-info #{author}
@@ -46,7 +46,7 @@ block content
 					div.d-flex
 						span(class="fas fa-user").ml-2.mr-2.text-muted
 						.text-small.text-muted #{comments[totalComments].authorUsername}
-					div.ml-5 #{comments[totalComments].text}
+					div(style="white-space: pre-wrap;").ml-5 #{comments[totalComments].text}
 					if user 
 						if `${user._id}` == `${comments[totalComments].authorId}` || user.role == "admin"
 							.d-flex

@@ -117,7 +117,8 @@ footer {
 
 /* Add Missing person page */
 #AMP_header{
-	background:transparent url('../mpf/bg3.webp') no-repeat center center /cover;
+	/* background:transparent url('../mpf/bg3.webp') no-repeat center center /cover; */
+	background-color: rgba(0, 0, 0, 0.87);
 }
 
 /* Edit Person */

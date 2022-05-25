@@ -221,9 +221,9 @@ footer {
 #article_single{
    background:transparent url('../mpf/single-article.jpg') no-repeat center center /cover;
 }
-#Edit_Article_Header{
+/* #Edit_Article_Header{
     background:transparent url('../mpf/flower.webp') no-repeat center center /cover;
-}
+} */
 
 /* Services page*/
 .services .media{

@@ -1,11 +1,11 @@
 extends layout
 
-block header
-	#Edit_Article_Header
-		h1(style="display:table-cell;text-align: center").align-middle Edit Article
+//- block header
+	//- #Edit_Article_Header
+		h1(style="display:table-cell;text-align: center").align-middle Update your article
 
 block content
-	h1 Edit Article
+	h1.mt-5 Edit Article
 	.bg-light.p-4
 		form(method='POST', action='/articles/edit/'+article._id enctype="multipart/form-data")
 			#form-group

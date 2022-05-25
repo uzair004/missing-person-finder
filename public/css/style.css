@@ -44,7 +44,8 @@ div.preview-images > img {
 #article_single,
 #Edit_Article_Header,
 #Services_Header,
-#About_Header {
+#About_Header,
+#Blog_Header {
 	width:100%;
 	height:50vh;
 	color:white;
@@ -235,6 +236,10 @@ footer {
 /* About page*/
 #About_Header{
     background:transparent url('../mpf/about.webp') no-repeat center center /cover; 
+}
+
+#Blog_Header{
+    background:transparent url('../mpf/blog.jpg') no-repeat center center /cover; 
 }
 
 /* Blog */

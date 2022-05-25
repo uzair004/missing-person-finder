@@ -102,9 +102,9 @@ footer {
 }
 
 /* Profile page */
-#Profile_header{
+/* #Profile_header{ */
 	/* background:transparent url('../mpf/bg2.webp') no-repeat center center /cover; */
-}
+/* } */
 
 #Profile_Image {
 	display: block;

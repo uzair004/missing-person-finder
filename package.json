@@ -4,7 +4,7 @@
 	"description": "Missing Person Finder Website built with Node.js for final Semester Project",
 	"main": "app.js",
 	"scripts": {
-		"start": "nodemon app"
+		"start": "node app"
 	},
 	"engines": {
 		"node": "16.x"

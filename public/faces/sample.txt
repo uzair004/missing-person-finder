@@ -1,0 +1,2 @@
+in this directory a facesDB.json file will be added, program will create it not exist.
+that file will contain faces description

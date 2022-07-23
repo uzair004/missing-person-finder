@@ -6,6 +6,9 @@
 	"scripts": {
 		"start": "nodemon app"
 	},
+	"engines": {
+		"node": "14.x"
+	  },
 	"author": "Muhammad Uzair",
 	"license": "ISC",
 	"dependencies": {

@@ -10,7 +10,7 @@ const passport = require('passport');
 // Bring in Person Model
 let Person = require("./models/person");
 
-mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true }).catch(err => console.error(err));
 let db = mongoose.connection;
 
 // Check connection

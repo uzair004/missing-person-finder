@@ -4,3 +4,5 @@ public/faces/
 .vscode/settings.json
 public/.DS_Store
 public/mpf/.DS_Store
+npm-debug.log
+.DS_Store

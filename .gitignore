@@ -1,6 +1,6 @@
 node_modules/
 .env
-# public/faces/facesDB.json
+public/faces/facesDB.json
 .vscode/settings.json
 public/.DS_Store
 public/mpf/.DS_Store

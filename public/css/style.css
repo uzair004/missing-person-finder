@@ -171,6 +171,10 @@ footer {
     background:transparent url('../mpf/search.webp') no-repeat center center /cover;
 }
 
+#imageSearchContainer {
+	width: 50%;
+}
+
 @media (min-width: 992px){
     .search-sec{
         position: absolute;
@@ -212,6 +216,10 @@ footer {
 		width: 80%;
 		height: auto;
 	}
+	#imageSearchContainer {
+		width: 90%;
+	}
+
 }
 
 /* articles related pages*/

@@ -64,12 +64,12 @@ mixin divider
 
 mixin imageSearch
 	section.align-middle#person_search_pageForm
-		.container.w-50
+		.container#imageSearchContainer
 			form(action='/person/person_search_by_image', method='post',enctype="multipart/form-data" novalidate='novalidate')
 				.row
-					.col-lg-6.col-sm-12.my-2.my-lg-0
+					.col-lg-8.col-sm-12.my-2.my-lg-0
 						input#input-files.form-control-file.form-control-lg.border(type='file', name='file')
-					.col-lg-6.col-sm-12.p-0
+					.col-lg-4.col-sm-6.p-0
 						button.btn.btn-primary.wrn-btn(type='submit' ) Image Search
 
 //- Content

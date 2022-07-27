@@ -40,7 +40,7 @@ mixin divider
 
 mixin imageSearch
 	section.align-middle#person_search_pageForm
-		.container.w-50
+		.container#imageSearchContainer
 			form(action='/person/person_search_by_image', method='post',enctype="multipart/form-data" novalidate='novalidate')
 				.row
 					.col-lg-6.col-sm-12.my-2.my-lg-0

@@ -1,5 +1,10 @@
 # missing-person-finder
 
+## Prequisites
+* Node v16.x
+* get env file from peers & set env variables
+* install dependencies `npm install` or `npm i`
+
 ## Run
 `npm start` then open browser & visit `localhost:300`
 
@@ -14,4 +19,4 @@ missing-people-finder
 * commit your changes to this repo
 * `git push heroku main` to deploy main branch to heroku
 * `heroku open` will open browser to the app
-* `heroku logs` will show the logs
+* `heroku logs --tail` will show the logs

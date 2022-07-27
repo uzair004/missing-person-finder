@@ -194,7 +194,8 @@ footer {
         background: rgba(26, 70, 104, 0.51);
     }
     .carousel-inner > .carousel-item, .carousel-inner > .carousel-item > img{
-   		height: 80vh;
+		margin-top: 2rem;
+   		height: 50vh;
 	}
 	.article-preview {
 		display: flex;

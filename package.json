@@ -4,7 +4,8 @@
 	"description": "Missing Person Finder Website built with Node.js for final Semester Project",
 	"main": "app.js",
 	"scripts": {
-		"start": "node app"
+		"start": "node app",
+		"pm2": "pm2 start pm2.json --no-daemon"
 	},
 	"engines": {
 		"node": "16.x"
@@ -35,6 +36,7 @@
 		"pug": "^3.0.2"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.19"
+		"nodemon": "^2.0.19",
+		"pm2": "^5.4.1"
 	}
 }

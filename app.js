@@ -13,6 +13,8 @@ let Person = require("./models/person");
 mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = mongoose.connection;
 
+const PORT = process.env.PORT || 3000;
+
 // Check connection
 db.once('open', function () {
 	console.log('Connected to MongoDB................');
@@ -160,6 +162,6 @@ app.post("/admin/login", async function(req, res, next) {
 })
 
 // Start Server
-app.listen(process.env.PORT || 3000, function () {
+app.listen(PORT, '0.0.0.0', function () {
 	console.log('Server started on port 3000...');
 });

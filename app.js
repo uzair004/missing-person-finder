@@ -163,5 +163,5 @@ app.post("/admin/login", async function(req, res, next) {
 
 // Start Server
 app.listen(PORT, '0.0.0.0', function () {
-	console.log('Server started on port 3000...');
+	console.log(`Server started on port ${PORT}`);
 });

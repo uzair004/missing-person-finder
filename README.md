@@ -6,7 +6,7 @@
 * install dependencies `npm install` or `npm i`
 
 ## Run
-`npm start` then open browser & visit `localhost:300`
+`npm start` then open browser & visit `localhost:3000`
 
 ## live demo
 

@@ -1,0 +1,26 @@
+name: CICD
+
+on:
+  push:
+    branches: ['main']
+
+defaults:
+  run:
+    working-directory: .
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH to remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd missing-person-finder
+            git pull
+            npm i
+            pm2 restart 0

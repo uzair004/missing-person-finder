@@ -22,5 +22,9 @@ jobs:
           script: |
             cd missing-person-finder
             git pull
+            echo $PATH
+            which npm
+            npm -v
+            pm2 -v
             npm i
             pm2 restart 0

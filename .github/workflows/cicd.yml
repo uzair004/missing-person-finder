@@ -20,6 +20,8 @@ jobs:
           key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
           port: 22
           script: |
+            # Update PATH to include the directory where node and npm are installed
+            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.13.1/bin
             cd missing-person-finder
             git pull
             echo $PATH

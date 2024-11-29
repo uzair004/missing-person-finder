@@ -15,7 +15,7 @@
 	"author": "Muhammad Uzair",
 	"license": "ISC",
 	"dependencies": {
-		"@tensorflow/tfjs-node": "^3.21.1",
+		"@tensorflow/tfjs-node": "^4.22.0",
 		"@vladmandic/human": "^2.0.3",
 		"@vladmandic/pilogger": "^0.2.17",
 		"bcryptjs": "^2.4.3",
